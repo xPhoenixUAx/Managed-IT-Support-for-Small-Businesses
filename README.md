@@ -1,19 +1,24 @@
 # SteadyDesk IT
 
-Framework-free multi-page website built with semantic HTML, handcrafted CSS, and vanilla JavaScript. There is no React, Next.js, vinext, Vite, Tailwind, Bootstrap, or other front-end framework.
+Багатосторінковий сайт на чистому HTML, CSS, JavaScript і PHP. Без фреймворків, збирачів та сторонніх бібліотек.
 
-## Edit repeated site data
+## Структура
 
-Update `config/site-config.mjs` to change the site name, company name, corporate email, website, address, company ID, navigation, footer copy, form labels, request types, and success message.
+- `index.html` та папки сторінок — готові HTML-файли.
+- `assets/styles.css` — усі стилі сайту.
+- `assets/app.js` — мобільне меню, анімації, config-підстановка та AJAX-відправка форми.
+- `config.js` — назва сайту й компанії, email, адреса, footer, повторювані посилання та налаштування форми.
+- `api/contact.php` — валідація і надсилання форми через стандартну PHP-функцію `mail()`.
+- `images/` і `og.png` — зображення сайту.
 
-Service content is maintained in `config/services.mjs`. Every service automatically receives its own detailed HTML page during the build.
+## Локальний запуск
 
-## Commands
+```bash
+php -S localhost:8000
+```
 
-- `node scripts/dev.mjs` builds and serves the vanilla site locally.
-- `node scripts/build.mjs` creates production HTML/CSS/JS and the small email-delivery Worker in `dist/`.
-- `node scripts/build.mjs && node --test tests/site.test.mjs` verifies all routes, config rendering, lack of framework output, and form validation.
+Відкрити `http://localhost:8000/`.
 
-## Email delivery
+## Форма
 
-The form posts to `/api/contact`. Configure `RESEND_API_KEY` and `RESEND_FROM_EMAIL` in the hosted environment. `RESEND_FROM_EMAIL` must use a verified sender domain.
+На сервері має бути PHP 8+ і налаштована відправка пошти для функції `mail()`. У `config.js` потрібно вказати фактичну корпоративну адресу отримувача та адресу відправника з домену сайту. Об'єкт у цьому файлі потрібно залишати у JSON-сумісному форматі: без коментарів і зайвих ком після останніх значень.
