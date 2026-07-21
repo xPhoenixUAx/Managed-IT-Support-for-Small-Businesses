@@ -22,8 +22,11 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { margin: 0; min-width: 320px; background: var(--paper); color: var(--ink); font-family: var(--font-sans); font-size: 16px; line-height: 1.65; overflow-x: hidden; }
+html { max-width: 100%; overflow-x: hidden; scroll-behavior: smooth; }
+body { width: 100%; max-width: 100%; margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-sans); font-size: 16px; line-height: 1.65; overflow-x: hidden; }
+@supports (overflow: clip) {
+  html, body { overflow-x: clip; }
+}
 body.menu-lock { overflow: hidden; }
 a { color: inherit; text-decoration: none; }
 img { display: block; max-width: 100%; }
@@ -520,7 +523,7 @@ body.page-transitioning { cursor: progress; }
   .header-inner { min-height: 82px; }
   .desktop-nav { display: none; }
   .menu-toggle { display: inline-flex; margin-left: auto; }
-  .mobile-menu { position: fixed; z-index: 90; inset: 82px 0 0; display: flex; flex-direction: column; justify-content: space-between; padding: 24px; background: var(--ice); opacity: 0; pointer-events: none; transform: translateY(-12px); transition: opacity .25s, transform .25s; overflow-y: auto; }
+  .mobile-menu { position: fixed; z-index: 90; inset: 82px 0 0; display: flex; flex-direction: column; justify-content: space-between; padding: 24px; overflow-x: hidden; overflow-y: auto; background: var(--ice); opacity: 0; pointer-events: none; transform: translateY(-12px); transition: opacity .25s, transform .25s; }
   .mobile-menu.open { opacity: 1; pointer-events: auto; transform: none; }
   .mobile-menu nav { display: flex; flex-direction: column; }
   .mobile-menu nav > a, .mobile-services-toggle { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border: 0; border-bottom: 1px solid #bddce2; background: transparent; color: var(--ink); font-family: var(--font-serif); font-size: 1.55rem; text-align: left; cursor: pointer; }
@@ -807,6 +810,7 @@ body.page-transitioning { cursor: progress; }
 
 @media (max-width: 640px) {
   .scroll-progress { height: 3px; }
+  .reveal.reveal-from-left:not(.is-visible), .reveal.reveal-from-right:not(.is-visible) { transform: translate3d(0, 28px, 0); }
   .interactive-card.is-interacting { transform: none !important; }
   .hero-badge, .page-hero-accent, .floating-note, .story-fact, .about-note { animation-duration: 6.5s; }
   .swipe-feedback { display: flex; }
