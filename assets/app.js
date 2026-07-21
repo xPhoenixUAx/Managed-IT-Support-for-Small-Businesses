@@ -660,10 +660,13 @@
       ".service-intro-grid > .reveal",
       ".service-spotlight-grid > .reveal",
       ".partnership-grid > .reveal",
-      ".contact-page-grid > .reveal",
     ].join(",")).forEach((element, index) => {
       element.classList.add(index % 2 === 0 ? "reveal-from-left" : "reveal-from-right");
     });
+
+    document.querySelectorAll(".contact-form-heading, .contact-form-panel")
+      .forEach((element) => element.classList.add("reveal-from-left"));
+    document.querySelector(".contact-info-column")?.classList.add("reveal-from-right");
   };
 
   const initializeScrollMotion = () => {
