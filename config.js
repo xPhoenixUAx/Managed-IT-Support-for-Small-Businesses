@@ -62,6 +62,9 @@ window.SITE_CONFIG = {
     "policyLabel": "Read our Cookie Policy",
     "policyUrl": "/cookie-policy/"
   },
+  "ui": {
+    "pageLoaderLabel": "Loading the next page"
+  },
   "footer": {
     "text": "Reliable day-to-day IT help, safer systems, and clear guidance for small teams without an internal system administrator.",
     "serviceArea": "Remote support for small businesses across the United States.",

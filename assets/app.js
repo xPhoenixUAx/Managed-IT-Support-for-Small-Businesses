@@ -354,6 +354,98 @@
   };
 
   initializeCookieBanner();
+
+  const initializePageTransitions = () => {
+    const loader = document.createElement("div");
+    loader.className = "page-loader";
+    loader.dataset.pageLoader = "";
+    loader.setAttribute("role", "status");
+    loader.setAttribute("aria-live", "polite");
+    loader.setAttribute("aria-hidden", "true");
+
+    const panel = document.createElement("div");
+    panel.className = "page-loader__panel";
+    const visual = document.createElement("div");
+    visual.className = "page-loader__visual";
+    const mark = document.createElement("span");
+    mark.className = "page-loader__mark";
+    mark.textContent = config.brand.shortMark;
+    const ring = document.createElement("span");
+    ring.className = "page-loader__ring";
+    ring.setAttribute("aria-hidden", "true");
+    visual.append(mark, ring);
+
+    const copy = document.createElement("div");
+    copy.className = "page-loader__copy";
+    const brand = document.createElement("strong");
+    brand.textContent = config.brand.siteName;
+    const label = document.createElement("span");
+    label.textContent = config.ui?.pageLoaderLabel || "Loading page";
+    copy.append(brand, label);
+    panel.append(visual, copy);
+    loader.append(panel);
+    body.append(loader);
+
+    let navigationTimer = 0;
+    const showLoader = () => {
+      window.clearTimeout(navigationTimer);
+      loader.setAttribute("aria-hidden", "false");
+      body.classList.add("page-transitioning");
+      window.requestAnimationFrame(() => loader.classList.add("is-active"));
+    };
+    const hideLoader = () => {
+      window.clearTimeout(navigationTimer);
+      loader.classList.remove("is-active");
+      loader.setAttribute("aria-hidden", "true");
+      body.classList.remove("page-transitioning");
+    };
+
+    document.addEventListener("click", (event) => {
+      if (
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) return;
+
+      const target = event.target instanceof Element ? event.target : null;
+      const link = target?.closest("a[href]");
+      if (
+        !link ||
+        link.hasAttribute("download") ||
+        link.dataset.noTransition !== undefined ||
+        (link.target && link.target.toLowerCase() !== "_self")
+      ) return;
+
+      let destination;
+      try {
+        destination = new URL(link.href, window.location.href);
+      } catch {
+        return;
+      }
+
+      if (
+        destination.origin !== window.location.origin ||
+        !["http:", "https:"].includes(destination.protocol) ||
+        (
+          destination.pathname === window.location.pathname &&
+          destination.search === window.location.search
+        )
+      ) return;
+
+      event.preventDefault();
+      showLoader();
+      const transitionDelay = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 20 : 160;
+      navigationTimer = window.setTimeout(() => window.location.assign(destination.href), transitionDelay);
+    });
+
+    window.addEventListener("pagehide", showLoader);
+    window.addEventListener("pageshow", hideLoader);
+  };
+
+  initializePageTransitions();
   const menuButton = document.querySelector("[data-menu-toggle]");
   const mobileMenu = document.querySelector("[data-mobile-menu]");
   const servicesButton = document.querySelector("[data-services-toggle]");
