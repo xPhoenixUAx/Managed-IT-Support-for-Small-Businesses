@@ -10,9 +10,9 @@ Service content is maintained in `config/services.mjs`. Every service automatica
 
 ## Commands
 
-- `npm run dev` builds and serves the vanilla site locally.
-- `npm run build` creates production HTML/CSS/JS and the small email-delivery Worker in `dist/`.
-- `npm test` verifies all routes, config rendering, lack of framework output, and form validation.
+- `node scripts/dev.mjs` builds and serves the vanilla site locally.
+- `node scripts/build.mjs` creates production HTML/CSS/JS and the small email-delivery Worker in `dist/`.
+- `node scripts/build.mjs && node --test tests/site.test.mjs` verifies all routes, config rendering, lack of framework output, and form validation.
 
 ## Email delivery
 
