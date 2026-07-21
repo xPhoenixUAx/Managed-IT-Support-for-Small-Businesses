@@ -10,7 +10,11 @@ window.SITE_CONFIG = {
     "website": "https://steadydeskit.com",
     "websiteLabel": "steadydeskit.com",
     "address": "201 W 5th Street, Suite 1100, Austin, TX 78701",
-    "companyId": "TX-IT-29841"
+    "companyId": "TX-IT-29841",
+    "companyIdLabel": "Company ID",
+    "emailLabel": "Email",
+    "addressLabel": "Company address",
+    "websiteTitle": "Website"
   },
   "navigation": {
     "routes": {
@@ -80,6 +84,17 @@ window.SITE_CONFIG = {
       "General information"
     ],
     "selectPlaceholder": "Select a request type",
+    "fields": {
+      "nameLabel": "Name",
+      "namePlaceholder": "Your name",
+      "emailLabel": "Business email",
+      "emailPlaceholder": "you@company.com",
+      "companyLabel": "Company",
+      "companyPlaceholder": "Company name",
+      "inquiryLabel": "What can we help with?",
+      "messageLabel": "How is this affecting the business?",
+      "messagePlaceholder": "Describe the issue, setup, or information you need. Please do not include passwords or verification codes."
+    },
     "submitLabel": "Send request",
     "sendingLabel": "Sending…",
     "errorMessage": "We could not send your request.",
@@ -89,7 +104,11 @@ window.SITE_CONFIG = {
     "successIntro": "Thanks for contacting {siteName}.",
     "successMessage": "A support coordinator will review your message and reply by email.",
     "successDelivery": "Your request was delivered to {email}.",
-    "consentLabel": "I agree that {siteName} may use these details to respond to my request."
+    "consentLabel": "I agree that {siteName} may use these details to respond to my request.",
+    "modalEyebrow": "Message sent",
+    "modalCloseLabel": "Close confirmation",
+    "modalDoneLabel": "Done",
+    "fallbackEmailLabel": "Email {email}"
   },
   "collaboration": {
     "title": "Advertise & Collaborate",
@@ -106,9 +125,18 @@ window.SITE_CONFIG = {
     "policyUrl": "/cookie-policy/"
   },
   "ui": {
-    "pageLoaderLabel": "Loading the next page"
+    "pageLoaderLabel": "Loading the next page",
+    "emailSupportLabel": "Email support",
+    "requestSupportLabel": "Request support",
+    "sendRequestLabel": "Send a request",
+    "questionsBeforeLabel": "Questions before you begin?",
+    "openMenuLabel": "Open menu",
+    "closeMenuLabel": "Close menu"
   },
   "footer": {
+    "exploreTitle": "Explore",
+    "servicesTitle": "Services",
+    "contactTitle": "Contact",
     "text": "Reliable day-to-day IT help, safer systems, and clear guidance for small teams without an internal system administrator.",
     "serviceArea": "Remote support for small businesses across the United States.",
     "copyright": "All rights reserved."

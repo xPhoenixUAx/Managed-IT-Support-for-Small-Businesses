@@ -221,6 +221,7 @@
 
   const formatTemplate = (value, variables = {}) => Object.entries(variables)
     .reduce((result, [key, replacement]) => result.replaceAll(`{${key}}`, replacement), value || "");
+  const formTemplateVariables = { email: config.contact.email, siteName: config.brand.siteName };
 
   const isFilePreview = window.location.protocol === "file:";
   const normalizeRoute = (value) => {
@@ -321,7 +322,9 @@
       const rawHref = element.getAttribute("href") || "";
       if (!rawHref || rawHref.startsWith("#")) return;
       const source = new URL(rawHref, window.location.href);
-      const route = configuredRouteForUrl(source);
+      const route = isFilePreview && rawHref.startsWith("/")
+        ? configuredRouteForValue(rawHref)
+        : configuredRouteForUrl(source);
       const configuredUrl = configuredRoutes.get(route);
       if (!configuredUrl) return;
       element.setAttribute("href", isFilePreview
@@ -329,22 +332,13 @@
         : `${configuredUrl}${source.search}${source.hash}`);
     });
 
-    const configuredNavigationItems = [
+    const primaryLabelsByRoute = new Map([
       ...(config.navigation?.primary || []),
       ...(config.navigation?.legal || []),
-      ...(config.navigation?.serviceLinks || []),
-    ];
-    const labelsByRoute = new Map(configuredNavigationItems
+    ].map((item) => [normalizeRoute(item.route), item.label]));
+    const serviceLabelsByRoute = new Map((config.navigation?.serviceLinks || [])
       .map((item) => [normalizeRoute(item.route), item.label]));
-    document.querySelectorAll([
-      ".desktop-nav > a",
-      ".nav-dropdown > a",
-      ".dropdown-panel > a",
-      ".mobile-menu nav > a",
-      ".mobile-services > a",
-      ".footer-column:not(.footer-services):not(.footer-contact) > a",
-      ".footer-services > a",
-    ].join(",")).forEach((element) => {
+    const applyNavigationLabels = (selector, labelsByRoute) => document.querySelectorAll(selector).forEach((element) => {
       const route = configuredRouteForUrl(new URL(element.getAttribute("href"), window.location.href));
       const configuredLabel = labelsByRoute.get(route);
       if (!configuredLabel) return;
@@ -352,6 +346,27 @@
       if (icon) element.replaceChildren(document.createTextNode(`${configuredLabel} `), icon);
       else element.textContent = configuredLabel;
     });
+    applyNavigationLabels([
+      ".desktop-nav > a",
+      ".nav-dropdown > a",
+      ".mobile-menu nav > a",
+      ".footer-column:not(.footer-services):not(.footer-contact) > a",
+    ].join(","), primaryLabelsByRoute);
+    applyNavigationLabels([
+      ".dropdown-panel > a",
+      ".mobile-services > a",
+      ".footer-services > a",
+    ].join(","), serviceLabelsByRoute);
+    applyNavigationLabels(".breadcrumbs > a", new Map([...primaryLabelsByRoute, ...serviceLabelsByRoute]));
+    const servicesNavigationLabel = config.navigation?.primary
+      ?.find((item) => normalizeRoute(item.route) === "/services")?.label;
+    if (servicesNavigationLabel) {
+      document.querySelectorAll(".mobile-services-toggle").forEach((element) => {
+        const icon = element.querySelector('[aria-hidden="true"]');
+        if (icon) element.replaceChildren(document.createTextNode(`${servicesNavigationLabel} `), icon);
+        else element.textContent = servicesNavigationLabel;
+      });
+    }
 
     document.querySelectorAll(".brand-mark").forEach((element) => { element.textContent = config.brand.shortMark; });
     document.querySelectorAll(".brand-copy strong").forEach((element) => { element.textContent = config.brand.siteName; });
@@ -367,6 +382,12 @@
 
     document.querySelectorAll(".footer-brand > p:not(.service-area)").forEach((element) => { element.textContent = config.footer.text; });
     document.querySelectorAll(".service-area").forEach((element) => { element.textContent = config.footer.serviceArea; });
+    document.querySelectorAll(".footer-column:not(.footer-services):not(.footer-contact) > h2")
+      .forEach((element) => { element.textContent = config.footer.exploreTitle; });
+    document.querySelectorAll(".footer-services > h2")
+      .forEach((element) => { element.textContent = config.footer.servicesTitle; });
+    document.querySelectorAll(".footer-contact > h2")
+      .forEach((element) => { element.textContent = config.footer.contactTitle; });
     document.querySelectorAll(".footer-contact p span:not(.icon-glyph)").forEach((element) => { element.textContent = config.contact.address; });
     document.querySelectorAll("[data-config-address]").forEach((element) => { element.textContent = config.contact.address; });
     document.querySelectorAll("[data-config-website-label]").forEach((element) => { element.textContent = config.contact.websiteLabel; });
@@ -378,17 +399,26 @@
     });
 
     document.querySelectorAll(".contact-info-card").forEach((card) => {
-      const isAddressCard = [...card.querySelectorAll("span")]
-        .some((element) => element.textContent.trim() === "Company address");
-      if (!isAddressCard) return;
+      const label = card.querySelector(":scope > span:not(.icon-glyph)");
+      const mailLink = card.querySelector('a[href^="mailto:"]');
+      const websiteLink = card.querySelector('a[href^="http"]');
+      if (mailLink) {
+        if (label) label.textContent = config.contact.emailLabel;
+        return;
+      }
+      if (websiteLink) {
+        if (label) label.textContent = config.contact.websiteTitle;
+        return;
+      }
+      if (label) label.textContent = config.contact.addressLabel;
       const address = card.querySelector("p");
       const companyId = card.querySelector("small");
       if (address) address.textContent = config.contact.address;
-      if (companyId) companyId.textContent = `Company ID ${config.contact.companyId}`;
+      if (companyId) companyId.textContent = `${config.contact.companyIdLabel} ${config.contact.companyId}`;
     });
 
     const footerLines = document.querySelectorAll(".footer-bottom p");
-    if (footerLines[0]) footerLines[0].textContent = `${config.brand.companyName} · ${config.contact.address} · Company ID ${config.contact.companyId}`;
+    if (footerLines[0]) footerLines[0].textContent = `${config.brand.companyName} · ${config.contact.address} · ${config.contact.companyIdLabel} ${config.contact.companyId}`;
     if (footerLines[1]) footerLines[1].textContent = `© ${new Date().getFullYear()} ${config.brand.siteName}. ${config.footer.copyright}`;
 
     if (config.collaboration) {
@@ -400,7 +430,7 @@
       });
     }
 
-    const formTemplateVariables = { email: config.contact.email, siteName: config.brand.siteName };
+    const formFields = config.forms.fields || {};
     document.querySelectorAll(".consent > span").forEach((element) => {
       element.textContent = formatTemplate(config.forms.consentLabel, formTemplateVariables);
     });
@@ -413,6 +443,18 @@
         : config.forms.endpoint);
       const submitButton = form.querySelector('button[type="submit"]');
       if (submitButton) submitButton.textContent = config.forms.submitLabel;
+      const configureField = (name, label, placeholder = "") => {
+        const field = form.querySelector(`[name="${name}"]`);
+        if (!field) return;
+        const labelElement = field.closest("label")?.querySelector(":scope > span");
+        if (labelElement && label) labelElement.textContent = label;
+        if (placeholder && "placeholder" in field) field.placeholder = placeholder;
+      };
+      configureField("name", formFields.nameLabel, formFields.namePlaceholder);
+      configureField("email", formFields.emailLabel, formFields.emailPlaceholder);
+      configureField("company", formFields.companyLabel, formFields.companyPlaceholder);
+      configureField("inquiryType", formFields.inquiryLabel);
+      configureField("message", formFields.messageLabel, formFields.messagePlaceholder);
     });
     document.querySelectorAll('select[name="inquiryType"]').forEach((select) => {
       const selectedValue = select.value;
@@ -451,11 +493,29 @@
       const title = modal.querySelector("h2");
       const message = modal.querySelector("h2 + p");
       const delivered = modal.querySelector(".modal-email");
+      const eyebrow = modal.querySelector(".eyebrow");
+      const closeButton = modal.querySelector(".modal-close");
+      const doneButton = modal.querySelector('.button[data-modal-close]');
       if (title) title.textContent = config.forms.successTitle;
       if (message) {
         message.textContent = `${formatTemplate(config.forms.successIntro, formTemplateVariables)} ${config.forms.successMessage}`;
       }
       if (delivered) delivered.textContent = formatTemplate(config.forms.successDelivery, formTemplateVariables);
+      if (eyebrow) eyebrow.textContent = config.forms.modalEyebrow;
+      if (closeButton) closeButton.setAttribute("aria-label", config.forms.modalCloseLabel);
+      if (doneButton) doneButton.textContent = config.forms.modalDoneLabel;
+    });
+
+    document.querySelectorAll(".header-contact small, .mobile-contact > span")
+      .forEach((element) => { element.textContent = config.ui.emailSupportLabel; });
+    document.querySelectorAll(".mobile-contact > .button")
+      .forEach((element) => { element.textContent = config.ui.requestSupportLabel; });
+    document.querySelectorAll(".footer-contact > .button")
+      .forEach((element) => { element.textContent = config.ui.sendRequestLabel; });
+    document.querySelectorAll(".service-contact-line > span:not(.icon-glyph)")
+      .forEach((element) => { element.textContent = config.ui.questionsBeforeLabel; });
+    document.querySelectorAll("[data-menu-toggle]").forEach((element) => {
+      element.setAttribute("aria-label", config.ui.openMenuLabel);
     });
   };
 
@@ -675,7 +735,7 @@
 
   const closeMenu = () => {
     menuButton?.setAttribute("aria-expanded", "false");
-    menuButton?.setAttribute("aria-label", "Open menu");
+    menuButton?.setAttribute("aria-label", config.ui.openMenuLabel);
     mobileMenu?.classList.remove("open");
     if (mobileMenu) mobileMenu.inert = true;
     servicesButton?.setAttribute("aria-expanded", "false");
@@ -687,7 +747,7 @@
   menuButton?.addEventListener("click", () => {
     const opening = menuButton.getAttribute("aria-expanded") !== "true";
     menuButton.setAttribute("aria-expanded", String(opening));
-    menuButton.setAttribute("aria-label", opening ? "Close menu" : "Open menu");
+    menuButton.setAttribute("aria-label", opening ? config.ui.closeMenuLabel : config.ui.openMenuLabel);
     mobileMenu?.classList.toggle("open", opening);
     if (mobileMenu) mobileMenu.inert = !opening;
     body.classList.toggle("menu-open", opening);
@@ -1008,7 +1068,7 @@
         status.append(document.createTextNode(`${error.message || config.forms.errorMessage} `));
         const fallback = document.createElement("a");
         fallback.href = `mailto:${config.contact.email}`;
-        fallback.textContent = `Email ${config.contact.email}`;
+        fallback.textContent = formatTemplate(config.forms.fallbackEmailLabel, formTemplateVariables);
         status.append(fallback);
         status.hidden = false;
       } finally {
