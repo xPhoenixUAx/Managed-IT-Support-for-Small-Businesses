@@ -604,8 +604,12 @@
   if (serviceCategories.length) {
     const compactServicesQuery = window.matchMedia("(max-width: 640px)");
     const syncServiceCategories = (query) => {
+      const requestedCategoryIndex = serviceCategories.findIndex((category) => (
+        category.id && `#${category.id}` === window.location.hash
+      ));
+      const compactCategoryIndex = requestedCategoryIndex >= 0 ? requestedCategoryIndex : 0;
       serviceCategories.forEach((category, index) => {
-        category.open = query.matches ? index === 0 : true;
+        category.open = query.matches ? index === compactCategoryIndex : true;
       });
     };
 
@@ -615,6 +619,7 @@
     } else {
       compactServicesQuery.addListener(syncServiceCategories);
     }
+    window.addEventListener("hashchange", () => syncServiceCategories(compactServicesQuery));
 
     serviceCategories.forEach((category) => {
       category.addEventListener("toggle", () => {
