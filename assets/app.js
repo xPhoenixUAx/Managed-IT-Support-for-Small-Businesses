@@ -52,6 +52,62 @@
     ["Send the request", "send"],
     ["We review", "search"],
     ["Take the next step", "arrow-right"],
+    ["Tell us what you need", "message-circle"],
+    ["We review and connect", "headset"],
+    ["Resolve and document", "clipboard-check"],
+  ]);
+  const valueIconNames = new Map([
+    ["Human first", "heart-handshake"],
+    ["Clear thinking", "lightbulb"],
+    ["Security built in", "shield-check"],
+    ["Documented work", "file-text"],
+  ]);
+  const highlightIconNames = new Map([
+    ["Safer accounts", "shield-check"],
+    ["Recoverable files", "database-backup"],
+    ["Clear priorities", "list-checks"],
+  ]);
+  const outcomeIconNames = new Map([
+    ["Email from your company domain", "mail"],
+    ["Better message delivery", "send"],
+    ["Reduced account takeover risk", "shield-check"],
+    ["Clear ownership of shared inboxes", "users"],
+    ["Recoverable business files", "database-backup"],
+    ["Protection from accidental deletion", "shield"],
+    ["Less reliance on a single device or account", "copy-check"],
+    ["A documented recovery path", "file-check"],
+    ["Stronger protection against stolen passwords", "key-round"],
+    ["Reduced exposure from old accounts", "user-minus"],
+    ["Safer employee devices", "laptop"],
+    ["A clear response plan for suspicious activity", "clipboard-check"],
+    ["Consistent setup across the team", "settings"],
+    ["Better control of company access", "lock-keyhole"],
+    ["Faster employee onboarding", "user-plus"],
+    ["Reduced risk from lost or old devices", "shield-check"],
+    ["Consistent business communication", "message-square"],
+    ["Organized team file sharing", "folders"],
+    ["Safer account access", "shield-check"],
+    ["Simple administration as the team grows", "users"],
+    ["Predictable access to support", "headset"],
+    ["Fewer neglected maintenance tasks", "wrench"],
+    ["Consistent onboarding and offboarding", "users"],
+    ["Better planning for technology costs", "bar-chart-3"],
+    ["Professional company email", "mail-check"],
+    ["Clear access to shared information", "folder-open"],
+    ["Safer sign-ins", "key-round"],
+    ["A setup employees can understand", "book-open"],
+    ["More reliable daily connectivity", "wifi"],
+    ["Better coverage in work areas", "radio-tower"],
+    ["Safer guest access", "user-check"],
+    ["Faster troubleshooting when issues occur", "search"],
+    ["Less downtime for employees", "clock"],
+    ["A clear point of contact for IT questions", "message-circle"],
+    ["Fewer repeated problems", "repeat-2"],
+    ["Support that scales with your team", "trending-up"],
+    ["A clear starting point", "flag"],
+    ["Less time guessing at the cause", "search"],
+    ["Support matched to the issue", "route"],
+    ["Useful follow-up documentation", "file-text"],
   ]);
 
   const createIconPlaceholder = (name, className = "") => {
@@ -102,6 +158,21 @@
         ?.querySelector("h3")?.textContent.trim();
       if (processTitle && processIconNames.has(processTitle)) {
         iconName = processIconNames.get(processTitle);
+      }
+      const valueTitle = element.closest(".value-card")
+        ?.querySelector("h3")?.textContent.trim();
+      if (valueTitle && valueIconNames.has(valueTitle)) {
+        iconName = valueIconNames.get(valueTitle);
+      }
+      const outcomeTitle = element.closest(".outcome-list > div")
+        ?.querySelector("p")?.textContent.trim();
+      if (outcomeTitle && outcomeIconNames.has(outcomeTitle)) {
+        iconName = outcomeIconNames.get(outcomeTitle);
+      }
+      const highlightTitle = element.closest(".mini-outcomes > div, .floating-note")
+        ?.querySelector("strong")?.textContent.trim();
+      if (highlightTitle && highlightIconNames.has(highlightTitle)) {
+        iconName = highlightIconNames.get(highlightTitle);
       }
       if (iconName) replaceWithIcon(element, iconName);
     });
