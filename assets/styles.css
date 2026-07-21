@@ -190,6 +190,7 @@ h3 { line-height: 1.2; }
 .service-category .service-card-body > p:not(.eyebrow) { min-height: 70px; }
 .service-category-grid.is-two .service-card { display: grid; grid-template-columns: minmax(180px, .72fr) minmax(0, 1fr); }
 .service-category-grid.is-two .service-image { height: 100%; aspect-ratio: auto; }
+.service-category-grid.is-two .service-icon { top: 28px; right: auto; left: -28px; }
 .service-category-grid.is-two .service-card-body > p:not(.eyebrow) { min-height: 0; }
 
 /* Story and process */
@@ -643,6 +644,7 @@ body.page-transitioning { cursor: progress; }
   .service-category .service-image, .service-category-grid.is-two .service-image { height: 100%; min-height: 128px; aspect-ratio: auto; }
   .service-category .service-card-body { padding: 15px 44px 14px 15px; }
   .service-category .service-icon { top: 13px; right: 12px; width: 30px; height: 30px; border: 0; }
+  .service-category-grid.is-two .service-icon { top: 13px; right: 12px; left: auto; }
   .service-category .service-icon .lucide { width: 15px; height: 15px; stroke-width: 2; }
   .service-category .service-card-body .eyebrow { display: none; }
   .service-category .service-card h3 { margin-bottom: 6px; font-family: var(--font-sans); font-size: .98rem; font-weight: 750; line-height: 1.25; }
