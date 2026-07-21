@@ -6,7 +6,6 @@ export const services = [
     summary: "Resolve everyday computer, software, email, and access issues without waiting for an on-site visit.",
     description: "When technology interrupts the workday, we connect securely, explain what is happening in plain language, and get your team moving again. We also document recurring issues so the same problem is less likely to return.",
     image: "/images/remote-it-support.webp",
-    icon: "Headphones",
     included: ["Secure remote troubleshooting", "Email and application support", "Login and access recovery", "Printer and peripheral help", "Software updates and cleanup", "Issue notes and next-step guidance"],
     outcomes: ["Less downtime for employees", "A clear point of contact for IT questions", "Fewer repeated problems", "Support that scales with your team"],
     process: [
@@ -27,7 +26,6 @@ export const services = [
     summary: "Set up, track, maintain, and retire business laptops and mobile devices with a repeatable process.",
     description: "Every device that reaches company files should be configured consistently. We create a practical device standard, apply essential security settings, manage updates, and keep an understandable inventory as employees join or leave.",
     image: "/images/device-management.webp",
-    icon: "Laptop",
     included: ["New laptop and mobile setup", "Device inventory and ownership records", "Update and patch coordination", "Encryption and screen-lock settings", "Employee onboarding and offboarding", "Secure device retirement guidance"],
     outcomes: ["Consistent setup across the team", "Better control of company access", "Faster employee onboarding", "Reduced risk from lost or old devices"],
     process: [
@@ -48,7 +46,6 @@ export const services = [
     summary: "Configure Microsoft 365 email, files, calendars, and security around the way your team actually works.",
     description: "A thoughtful Microsoft 365 setup makes communication simpler and protects business information. We organize users, shared mailboxes, Teams, OneDrive, SharePoint, permissions, and essential security without overcomplicating the environment.",
     image: "/images/microsoft-365-setup.webp",
-    icon: "PanelsTopLeft",
     included: ["Tenant and domain configuration", "User, alias, and shared mailbox setup", "Teams and shared file structure", "OneDrive and SharePoint permissions", "Multi-factor authentication", "Migration planning and staff guidance"],
     outcomes: ["Professional company email", "Clear access to shared information", "Safer sign-ins", "A setup employees can understand"],
     process: [
@@ -69,7 +66,6 @@ export const services = [
     summary: "Build a clean Google Workspace environment for business email, shared files, calendars, and meetings.",
     description: "We configure Google Workspace so staff can find what they need without exposing information too broadly. That includes business email, groups, shared drives, calendars, account security, and practical administrative controls.",
     image: "/images/google-workspace-setup.webp",
-    icon: "CloudCog",
     included: ["Domain and Workspace configuration", "Business Gmail accounts and groups", "Shared drives and access structure", "Calendar and meeting setup", "Two-step verification", "Data migration and user guidance"],
     outcomes: ["Consistent business communication", "Organized team file sharing", "Safer account access", "Simple administration as the team grows"],
     process: [
@@ -90,7 +86,6 @@ export const services = [
     summary: "Create business email on your own domain with sensible security, shared addresses, and reliable delivery.",
     description: "We help you choose the right platform, connect the domain correctly, create staff and shared addresses, and protect accounts. The result is business email that looks professional and is easier to manage.",
     image: "/images/business-email-setup.webp",
-    icon: "MailCheck",
     included: ["Domain and mailbox configuration", "User aliases and shared addresses", "Email authentication records", "Spam and phishing protection", "Mobile and desktop setup", "Mailbox migration planning"],
     outcomes: ["Email from your company domain", "Better message delivery", "Reduced account takeover risk", "Clear ownership of shared inboxes"],
     process: [
@@ -111,7 +106,6 @@ export const services = [
     summary: "Protect essential files, cloud accounts, and business records with backups that are checked—not merely assumed.",
     description: "Syncing is useful, but it is not always a complete backup. We identify critical information, choose sensible retention, automate protected copies, and test recovery so your plan works when a file is deleted or a device fails.",
     image: "/images/cloud-backup.webp",
-    icon: "CloudUpload",
     included: ["Backup needs assessment", "Workstation and file backup", "Microsoft 365 or Google Workspace backup", "Retention and version planning", "Backup monitoring", "Recovery testing and documentation"],
     outcomes: ["Recoverable business files", "Protection from accidental deletion", "Less reliance on a single device or account", "A documented recovery path"],
     process: [
@@ -132,7 +126,6 @@ export const services = [
     summary: "Improve office Wi-Fi coverage, reliability, guest access, and basic network security without unnecessary complexity.",
     description: "Slow or unstable connectivity affects every cloud tool your business uses. We review the office layout and equipment, separate business and guest access, improve coverage, and document the network for easier future support.",
     image: "/images/network-wifi-support.webp",
-    icon: "Wifi",
     included: ["Connectivity and coverage review", "Router and access-point configuration", "Business and guest Wi-Fi separation", "Secure password and firmware practices", "Printer and device connectivity", "Network documentation"],
     outcomes: ["More reliable daily connectivity", "Better coverage in work areas", "Safer guest access", "Faster troubleshooting when issues occur"],
     process: [
@@ -153,7 +146,6 @@ export const services = [
     summary: "Reduce common small-business risks with safer sign-ins, updates, devices, email, and employee habits.",
     description: "Cybersecurity does not need to begin with a complex enterprise project. We prioritize the controls that matter most for a small team, explain why they help, and create a realistic improvement plan.",
     image: "/images/cybersecurity-basics.webp",
-    icon: "ShieldCheck",
     included: ["Multi-factor authentication", "Account and administrator review", "Device encryption and updates", "Email and phishing protection", "Password manager rollout", "Basic incident-response checklist"],
     outcomes: ["Stronger protection against stolen passwords", "Reduced exposure from old accounts", "Safer employee devices", "A clear response plan for suspicious activity"],
     process: [
@@ -174,7 +166,6 @@ export const services = [
     summary: "Combine day-to-day support, maintenance, advice, and planned improvements in one predictable service.",
     description: "An ongoing support plan gives owners and employees a clear place to ask for help. We agree on devices, users, priorities, included services, and review points so IT becomes a managed business function rather than a string of emergencies.",
     image: "/images/it-support-plans.webp",
-    icon: "ClipboardCheck",
     included: ["Remote help desk", "Routine device and account maintenance", "New employee setup", "Backup and security checks", "Technology planning", "Regular service review"],
     outcomes: ["Predictable access to support", "Fewer neglected maintenance tasks", "Consistent onboarding and offboarding", "Better planning for technology costs"],
     process: [
@@ -195,7 +186,6 @@ export const services = [
     summary: "Tell us what is happening, who is affected, and how urgent it feels. We will reply by email with the next step.",
     description: "You do not need to diagnose the problem before contacting us. Describe what you were trying to do, what changed, and any message you can see. We will use that information to route the request and explain the next practical step.",
     image: "/images/request-technical-support.webp",
-    icon: "LifeBuoy",
     included: ["Clear email acknowledgment", "Initial issue review", "Remote support scheduling", "Plain-language next steps", "Escalation guidance when hands-on service is required", "Options for ongoing support"],
     outcomes: ["A clear starting point", "Less time guessing at the cause", "Support matched to the issue", "Useful follow-up documentation"],
     process: [
@@ -210,5 +200,3 @@ export const services = [
     ],
   },
 ];
-
-export const getService = (slug) => services.find((service) => service.slug === slug);

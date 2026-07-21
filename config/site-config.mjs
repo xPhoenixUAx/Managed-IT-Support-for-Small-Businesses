@@ -45,8 +45,4 @@ export const siteConfig = {
     serviceArea: "Remote support for small businesses across the United States.",
     copyright: "All rights reserved.",
   },
-  social: [
-    { label: "LinkedIn", href: "https://www.linkedin.com" },
-    { label: "Facebook", href: "https://www.facebook.com" },
-  ],
 };
