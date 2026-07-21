@@ -52,6 +52,16 @@ window.SITE_CONFIG = {
     "successMessage": "A support coordinator will review your message and reply by email.",
     "consentLabel": "I agree that SteadyDesk IT may use these details to respond to my request."
   },
+  "cookies": {
+    "storageKey": "steadydesk_cookie_preference",
+    "title": "Your privacy choices",
+    "message": "We use essential browser storage to remember your preferences and support reliable form operation. Optional technologies remain off unless you accept them.",
+    "acceptLabel": "Accept all",
+    "essentialLabel": "Essential only",
+    "settingsLabel": "Cookie settings",
+    "policyLabel": "Read our Cookie Policy",
+    "policyUrl": "/cookie-policy/"
+  },
   "footer": {
     "text": "Reliable day-to-day IT help, safer systems, and clear guidance for small teams without an internal system administrator.",
     "serviceArea": "Remote support for small businesses across the United States.",

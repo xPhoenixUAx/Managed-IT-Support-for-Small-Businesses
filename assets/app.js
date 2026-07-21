@@ -242,6 +242,118 @@
   };
 
   applyConfig();
+
+  const initializeCookieBanner = () => {
+    const cookieSettings = config.cookies;
+    if (!cookieSettings) return;
+
+    const readPreference = () => {
+      try {
+        const saved = JSON.parse(localStorage.getItem(cookieSettings.storageKey) || "null");
+        return ["all", "essential"].includes(saved?.choice) ? saved.choice : "";
+      } catch {
+        return "";
+      }
+    };
+
+    const savePreference = (choice) => {
+      document.documentElement.dataset.cookiePreference = choice;
+      try {
+        localStorage.setItem(cookieSettings.storageKey, JSON.stringify({
+          choice,
+          savedAt: new Date().toISOString(),
+        }));
+      } catch {
+        // The preference applies for this page even if browser storage is unavailable.
+      }
+      window.dispatchEvent(new CustomEvent("cookie-preference-change", { detail: { choice } }));
+    };
+
+    const closeBanner = (banner) => {
+      banner.classList.add("is-closing");
+      window.setTimeout(() => banner.remove(), 220);
+    };
+
+    const showBanner = () => {
+      const openBanner = document.querySelector("[data-cookie-banner]");
+      if (openBanner) {
+        openBanner.querySelector(".cookie-banner__title")?.focus();
+        return;
+      }
+
+      const currentChoice = readPreference();
+      const banner = document.createElement("section");
+      banner.className = "cookie-banner";
+      banner.dataset.cookieBanner = "";
+      banner.setAttribute("role", "dialog");
+      banner.setAttribute("aria-labelledby", "cookie-banner-title");
+      banner.setAttribute("aria-describedby", "cookie-banner-message");
+
+      const iconWrap = document.createElement("div");
+      iconWrap.className = "cookie-banner__icon";
+      iconWrap.append(createIconPlaceholder("cookie"));
+
+      const copy = document.createElement("div");
+      copy.className = "cookie-banner__copy";
+      const title = document.createElement("h2");
+      title.id = "cookie-banner-title";
+      title.className = "cookie-banner__title";
+      title.tabIndex = -1;
+      title.textContent = cookieSettings.title;
+      const message = document.createElement("p");
+      message.id = "cookie-banner-message";
+      message.textContent = cookieSettings.message;
+      const policy = document.createElement("a");
+      policy.href = cookieSettings.policyUrl;
+      policy.textContent = cookieSettings.policyLabel;
+      copy.append(title, message, policy);
+
+      const actions = document.createElement("div");
+      actions.className = "cookie-banner__actions";
+      const essentialButton = document.createElement("button");
+      essentialButton.type = "button";
+      essentialButton.className = "button button-outline";
+      essentialButton.textContent = cookieSettings.essentialLabel;
+      essentialButton.setAttribute("aria-pressed", String(currentChoice === "essential"));
+      const acceptButton = document.createElement("button");
+      acceptButton.type = "button";
+      acceptButton.className = "button button-primary";
+      acceptButton.textContent = cookieSettings.acceptLabel;
+      acceptButton.setAttribute("aria-pressed", String(currentChoice === "all"));
+      actions.append(essentialButton, acceptButton);
+
+      const choose = (choice) => {
+        savePreference(choice);
+        closeBanner(banner);
+      };
+      essentialButton.addEventListener("click", () => choose("essential"));
+      acceptButton.addEventListener("click", () => choose("all"));
+
+      banner.append(iconWrap, copy, actions);
+      body.append(banner);
+      window.lucide?.createIcons({
+        root: banner,
+        attrs: { "aria-hidden": "true", "stroke-width": 1.8 },
+      });
+      window.requestAnimationFrame(() => banner.classList.add("is-visible"));
+    };
+
+    const savedChoice = readPreference();
+    if (savedChoice) document.documentElement.dataset.cookiePreference = savedChoice;
+    else showBanner();
+
+    const footerColumn = document.querySelector(".footer-column");
+    if (footerColumn) {
+      const settingsButton = document.createElement("button");
+      settingsButton.type = "button";
+      settingsButton.className = "cookie-settings-link";
+      settingsButton.textContent = cookieSettings.settingsLabel;
+      settingsButton.addEventListener("click", showBanner);
+      footerColumn.append(settingsButton);
+    }
+  };
+
+  initializeCookieBanner();
   const menuButton = document.querySelector("[data-menu-toggle]");
   const mobileMenu = document.querySelector("[data-mobile-menu]");
   const servicesButton = document.querySelector("[data-services-toggle]");
