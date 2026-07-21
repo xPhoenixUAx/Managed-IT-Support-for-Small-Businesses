@@ -778,7 +778,6 @@
       ".hero-actions .button",
       ".all-services-cta .button",
       ".service-cta .button",
-      ".contact-next .button",
     ].join(",")).forEach((button) => {
       button.classList.add("magnetic-button");
       button.addEventListener("pointermove", (event) => {

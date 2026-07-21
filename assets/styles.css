@@ -443,11 +443,6 @@ body.page-transitioning { cursor: progress; }
 .contact-safety { position: relative; z-index: 1; display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 1px solid rgba(20,120,237,.14); border-left: 3px solid var(--blue); border-radius: 12px; background: rgba(255,255,255,.34); color: var(--ink); }
 .contact-safety svg, .contact-safety > .icon-glyph { width: 22px; height: 22px; flex: 0 0 auto; color: var(--blue); }
 .contact-safety p { margin: 3px 0 0; color: var(--ink-soft); font-size: .68rem; line-height: 1.45; }
-.contact-next { background: var(--blue); color: white; }
-.contact-next .shell { min-height: 150px; display: flex; align-items: center; justify-content: space-between; gap: 30px; }
-.contact-next p { margin: 0; font-family: var(--font-serif); font-size: 1.45rem; }
-.contact-next a { display: flex; align-items: center; gap: 8px; font-size: .84rem; font-weight: 750; }
-
 /* Legal */
 .legal-hero { padding: clamp(84px, 8vw, 124px) 0 clamp(62px, 6vw, 82px); border-bottom: 1px solid var(--line); background: linear-gradient(135deg, #fff 0%, #fff 58%, #f1fbfc 100%); }
 .legal-hero h1 { max-width: 900px; margin-bottom: 22px; font-size: clamp(3.5rem, 6.5vw, 6.4rem); }
@@ -699,7 +694,7 @@ body.page-transitioning { cursor: progress; }
   .readiness-grid { grid-template-columns: 1fr; }
   .readiness-card { min-height: 0; padding: 24px; }
   .readiness-icon { margin-bottom: 32px; }
-  .next-service .shell, .contact-next .shell { min-height: 140px; flex-direction: column; align-items: flex-start; justify-content: center; gap: 10px; }
+  .next-service .shell { min-height: 140px; flex-direction: column; align-items: flex-start; justify-content: center; gap: 10px; }
   .about-note { width: 190px; padding: 18px; }
   .contact-info-card { padding: 14px 4px; }
   .legal-hero { padding: 64px 0 50px; }
