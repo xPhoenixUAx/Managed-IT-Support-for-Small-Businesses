@@ -1,28 +1,19 @@
-# SteadyDesk IT website
+# SteadyDesk IT
 
-Multi-page lead-generation website for a managed IT support company serving small businesses.
+Framework-free multi-page website built with semantic HTML, handcrafted CSS, and vanilla JavaScript. There is no React, Next.js, vinext, Vite, Tailwind, Bootstrap, or other front-end framework.
 
-## Content and company settings
+## Edit repeated site data
 
-Edit `app/config/site-config.ts` to update the brand name, company name, corporate email, website, address, company ID, navigation links, footer copy, and form messages.
+Update `config/site-config.mjs` to change the site name, company name, corporate email, website, address, company ID, navigation, footer copy, form labels, request types, and success message.
 
-Service copy and service-page content live in `app/content/services.ts`.
+Service content is maintained in `config/services.mjs`. Every service automatically receives its own detailed HTML page during the build.
+
+## Commands
+
+- `npm run dev` builds and serves the vanilla site locally.
+- `npm run build` creates production HTML/CSS/JS and the small email-delivery Worker in `dist/`.
+- `npm test` verifies all routes, config rendering, lack of framework output, and form validation.
 
 ## Email delivery
 
-The contact forms submit to `app/api/contact/route.ts`, which delivers each request to the corporate email configured in `site-config.ts`.
-
-Set the two values documented in `.env.example` before accepting live requests:
-
-- `RESEND_API_KEY`
-- `RESEND_FROM_EMAIL`
-
-The sending address must use a domain verified with the email provider.
-
-## Local development
-
-```bash
-npm install
-npm run dev
-npm run build
-```
+The form posts to `/api/contact`. Configure `RESEND_API_KEY` and `RESEND_FROM_EMAIL` in the hosted environment. `RESEND_FROM_EMAIL` must use a verified sender domain.

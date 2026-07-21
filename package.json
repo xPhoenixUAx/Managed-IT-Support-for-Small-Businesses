@@ -2,36 +2,16 @@
   "name": "steadydesk-it-website",
   "version": "1.0.0",
   "private": true,
-  "engines": {
-    "node": ">=22.13.0"
-  },
+  "description": "Framework-free HTML, CSS, and JavaScript website for managed IT support.",
+  "engines": { "node": ">=22" },
   "scripts": {
-    "dev": "vinext dev",
-    "build": "vinext build",
-    "start": "vinext start",
-    "test": "npm run build && node --test tests/rendered-html.test.mjs",
-    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
+    "dev": "node scripts/dev.mjs",
+    "build": "node scripts/build.mjs",
+    "start": "node scripts/dev.mjs",
+    "test": "npm run build && node --test tests/site.test.mjs",
+    "lint": "node --check site/assets/app.js && node --check server/index.js && node --check scripts/build.mjs && node --check config/services.mjs"
   },
-  "dependencies": {
-    "lucide-react": "^0.468.0",
-    "next": "16.2.6",
-    "react": "19.2.6",
-    "react-dom": "19.2.6"
-  },
-  "devDependencies": {
-    "@cloudflare/vite-plugin": "1.37.1",
-    "@types/node": "22.19.19",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react": "6.0.2",
-    "@vitejs/plugin-rsc": "0.5.26",
-    "eslint": "9.39.4",
-    "eslint-config-next": "16.2.6",
-    "react-server-dom-webpack": "19.2.6",
-    "typescript": "5.9.3",
-    "vinext": "0.0.50",
-    "vite": "8.0.13",
-    "wrangler": "4.92.0"
-  },
+  "dependencies": {},
+  "devDependencies": {},
   "type": "module"
 }
