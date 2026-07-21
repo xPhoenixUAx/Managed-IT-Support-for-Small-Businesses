@@ -283,6 +283,8 @@
     document.querySelectorAll(".footer-brand > p:not(.service-area)").forEach((element) => { element.textContent = config.footer.text; });
     document.querySelectorAll(".service-area").forEach((element) => { element.textContent = config.footer.serviceArea; });
     document.querySelectorAll(".footer-contact p span:not(.icon-glyph)").forEach((element) => { element.textContent = config.contact.address; });
+    document.querySelectorAll("[data-config-address]").forEach((element) => { element.textContent = config.contact.address; });
+    document.querySelectorAll("[data-config-website-label]").forEach((element) => { element.textContent = config.contact.websiteLabel; });
     document.querySelectorAll('.footer-contact a[href^="http"], .contact-info-card a[href^="http"]').forEach((element) => {
       element.href = config.contact.website;
       const arrow = element.querySelector('[aria-hidden="true"]');
