@@ -4,6 +4,103 @@
   const config = window.SITE_CONFIG;
   const body = document.body;
 
+  const serviceIconNames = new Map([
+    ["Remote IT Support", "headset"],
+    ["Device Management", "laptop"],
+    ["Microsoft 365 Setup", "layout-dashboard"],
+    ["Google Workspace Setup", "users"],
+    ["Business Email Setup", "mail-check"],
+    ["Cloud Backup", "cloud-upload"],
+    ["Network & Wi-Fi Support", "wifi"],
+    ["Cybersecurity Basics", "shield-check"],
+    ["IT Support Plans", "clipboard-check"],
+    ["Request Technical Support", "life-buoy"],
+  ]);
+
+  const createIconPlaceholder = (name, className = "") => {
+    const icon = document.createElement("i");
+    icon.dataset.lucide = name;
+    icon.setAttribute("aria-hidden", "true");
+    if (className) icon.className = className;
+    return icon;
+  };
+
+  const replaceWithIcon = (element, name) => {
+    const icon = createIconPlaceholder(name, element.className);
+    element.replaceWith(icon);
+    return icon;
+  };
+
+  const initializeIcons = () => {
+    if (!window.lucide?.createIcons) return;
+
+    const glyphIcons = new Map([
+      ["✉", "mail"],
+      ["⌖", "map-pin"],
+      ["✦", "sparkles"],
+      ["✓", "check"],
+      ["◇", "message-circle"],
+      ["◷", "monitor"],
+      ["⬡", "shield-check"],
+      ["•", "wrench"],
+      ["↗", "external-link"],
+    ]);
+
+    document.querySelectorAll(".icon-glyph").forEach((element) => {
+      const glyph = element.textContent.trim();
+      let iconName = glyphIcons.get(glyph);
+      const serviceTitle = (
+        element.closest(".service-card")?.querySelector("h3")?.textContent.trim() ||
+        element.closest(".service-hero")?.querySelector("h1")?.textContent.trim()
+      );
+      if (serviceTitle && serviceIconNames.has(serviceTitle)) {
+        iconName = serviceIconNames.get(serviceTitle);
+      }
+      if (iconName) replaceWithIcon(element, iconName);
+    });
+
+    const inlineIcons = new Map([
+      ["→", "arrow-right"],
+      ["⌄", "chevron-down"],
+      ["☰", "menu"],
+      ["↗", "external-link"],
+    ]);
+    document.querySelectorAll('span[aria-hidden="true"]').forEach((element) => {
+      const iconName = inlineIcons.get(element.textContent.trim());
+      if (iconName) replaceWithIcon(element, iconName);
+    });
+
+    document.querySelectorAll(".breadcrumbs > span").forEach((element) => {
+      if (element.textContent.trim() === "›") replaceWithIcon(element, "chevron-right");
+    });
+    document.querySelectorAll(".fit-faq summary > span").forEach((element) => {
+      if (element.textContent.trim() === "+") replaceWithIcon(element, "plus");
+    });
+    document.querySelectorAll(".modal-close").forEach((button) => {
+      if (button.textContent.trim() === "×") button.replaceChildren(createIconPlaceholder("x"));
+    });
+    document.querySelectorAll(".modal-check").forEach((element) => {
+      if (element.textContent.trim() === "✓") element.replaceChildren(createIconPlaceholder("check"));
+    });
+    document.querySelectorAll(".eyebrow").forEach((element) => {
+      const label = element.textContent.trim();
+      if (!label.startsWith("✦")) return;
+      element.replaceChildren(
+        createIconPlaceholder("sparkles"),
+        document.createTextNode(label.replace(/^✦\s*/, "")),
+      );
+    });
+
+    window.lucide.createIcons({
+      attrs: {
+        "aria-hidden": "true",
+        "stroke-width": 1.8,
+      },
+    });
+  };
+
+  initializeIcons();
+
   const applyConfig = () => {
     const renderedSiteName = document.querySelector(".brand-copy strong")?.textContent.trim() || "";
     const renderedCompanyName = document.querySelector(".footer-bottom p")?.textContent.split("·")[0].trim() || "";
