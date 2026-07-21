@@ -521,6 +521,8 @@ body.page-transitioning { cursor: progress; }
 
 @media (max-width: 900px) {
   body.menu-open .site-header { position: fixed; top: 0; right: 0; left: 0; width: 100%; }
+  body.menu-open .site-header.is-scrolled .header-inner { min-height: 82px; }
+  body.menu-open .mobile-menu { position: absolute; inset: 100% 0 auto; height: calc(100vh - 82px); height: calc(100dvh - 82px); }
   .header-inner { min-height: 82px; }
   .desktop-nav { display: none; }
   .menu-toggle { display: inline-flex; margin-left: auto; }
@@ -593,6 +595,8 @@ body.page-transitioning { cursor: progress; }
   .shell, .header-inner { width: calc(100% - 32px); }
   .section { padding: 72px 0; }
   h2 { font-size: clamp(2.1rem, 10.5vw, 3.25rem); }
+  body.menu-open .site-header.is-scrolled .header-inner { min-height: 74px; }
+  body.menu-open .mobile-menu { height: calc(100vh - 74px); height: calc(100dvh - 74px); }
   .header-inner { min-height: 74px; }
   .brand-mark { width: 44px; }
   .brand-copy strong { font-size: 1rem; }
