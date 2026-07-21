@@ -54,7 +54,7 @@ h3 { line-height: 1.2; }
 .reveal.is-visible { opacity: 1; transform: none; }
 
 /* Header */
-.site-header { position: relative; z-index: 100; background: var(--ice); }
+.site-header { position: sticky; z-index: 100; top: 0; background: var(--ice); box-shadow: 0 1px 0 rgba(16, 47, 70, .08); }
 .header-inner { width: min(1440px, calc(100% - 80px)); min-height: 104px; margin-inline: auto; display: flex; align-items: center; gap: clamp(20px, 3vw, 52px); }
 .brand { display: inline-flex; align-items: center; gap: 12px; flex: 0 0 auto; }
 .brand-mark { position: relative; display: grid; width: 54px; aspect-ratio: 1; place-items: center; overflow: hidden; border-radius: 50%; background: var(--ink); color: white; font-family: var(--font-serif), Georgia, serif; font-size: 1.15rem; letter-spacing: -.08em; }
