@@ -330,6 +330,13 @@ body.page-transitioning { cursor: progress; }
 .partnership-copy .check-list li { color: #d9e8ee; }
 .partnership-copy .check-list svg { color: #66c0ff; }
 .contact-page-section { background: var(--ice); }
+.collaboration-panel { display: grid; grid-template-columns: minmax(300px, .78fr) minmax(0, 1.22fr); align-items: center; gap: clamp(40px, 7vw, 100px); margin-bottom: clamp(58px, 7vw, 96px); padding: clamp(38px, 5vw, 70px); overflow: hidden; border-radius: var(--radius); background: var(--navy); color: white; box-shadow: var(--shadow); }
+.collaboration-heading { position: relative; }
+.collaboration-icon { display: grid; width: 58px; height: 58px; place-items: center; margin-bottom: 28px; border-radius: 16px; background: var(--blue); color: white; }
+.collaboration-icon .lucide { width: var(--icon-lg); height: var(--icon-lg); stroke-width: 1.85; }
+.collaboration-panel .eyebrow { margin-bottom: 16px; color: #8fd0ff; }
+.collaboration-panel h2 { max-width: 540px; margin-bottom: 0; font-size: clamp(2.65rem, 4.5vw, 4.8rem); }
+.collaboration-copy { max-width: 780px; margin: 0; color: #d7e9f1; font-size: clamp(.96rem, 1.15vw, 1.08rem); line-height: 1.85; }
 .contact-page-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(320px, .72fr); align-items: start; gap: clamp(40px, 7vw, 90px); }
 .contact-form-column > p:not(.eyebrow) { max-width: 680px; color: var(--ink-soft); }
 .contact-form-column .contact-form { margin-top: 34px; border-radius: var(--radius); background: white; box-shadow: var(--shadow); }
@@ -421,6 +428,7 @@ body.page-transitioning { cursor: progress; }
   .trust-strip { width: calc(100% - 36px); grid-template-columns: 1fr; margin-top: 0; }
   .trust-item + .trust-item { border-left: 0; border-top: 1px solid var(--line); }
   .split-heading, .story-grid, .security-grid, .contact-band-grid, .plan-callout-grid, .request-grid, .service-intro-grid, .service-fit-grid, .partnership-grid, .contact-page-grid { grid-template-columns: 1fr; }
+  .collaboration-panel { grid-template-columns: 1fr; gap: 28px; }
   .split-heading { align-items: start; gap: 24px; }
   .service-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .story-images, .about-photo-stack { min-height: 560px; }
@@ -495,6 +503,9 @@ body.page-transitioning { cursor: progress; }
   .page-loader__panel { width: min(100%, 320px); justify-content: center; padding: 20px; }
   .page-loader__visual { width: 62px; height: 62px; }
   .page-loader__mark { width: 44px; height: 44px; }
+  .collaboration-panel { padding: 32px 24px; }
+  .collaboration-icon { width: 52px; height: 52px; margin-bottom: 22px; border-radius: 14px; }
+  .collaboration-icon .lucide { width: 24px; height: 24px; }
   .page-hero, .service-hero { padding-top: 65%; }
   .page-hero-image, .service-hero-image { height: 43%; }
   .page-hero-panel, .service-hero-panel { width: calc(100% - 24px); margin-inline: 12px; padding: 32px 24px; }

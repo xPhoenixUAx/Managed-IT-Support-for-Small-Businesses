@@ -52,6 +52,10 @@ window.SITE_CONFIG = {
     "successMessage": "A support coordinator will review your message and reply by email.",
     "consentLabel": "I agree that SteadyDesk IT may use these details to respond to my request."
   },
+  "collaboration": {
+    "title": "Advertise & Collaborate",
+    "text": "We are always open to new opportunities, high-impact collaborations, and tailored business partnerships. Whether you want to advertise your brand to our audience, launch a joint project, or book our professional services, we are ready to bring your ideas to life. Every business is unique, and we don't believe in one-size-fits-all solutions. Please reach out to us using the contact form below, tell us a bit about your goals, and our team will get back to you with an exclusive, custom-tailored proposal designed strictly for your budget and objectives. Let’s build something great together."
+  },
   "cookies": {
     "storageKey": "steadydesk_cookie_preference",
     "title": "Your privacy choices",

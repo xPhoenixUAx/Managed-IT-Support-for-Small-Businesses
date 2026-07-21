@@ -304,6 +304,15 @@
     if (footerLines[0]) footerLines[0].textContent = `${config.brand.companyName} · ${config.contact.address} · Company ID ${config.contact.companyId}`;
     if (footerLines[1]) footerLines[1].textContent = `© ${new Date().getFullYear()} ${config.brand.siteName}. ${config.footer.copyright}`;
 
+    if (config.collaboration) {
+      document.querySelectorAll("[data-collaboration-title]").forEach((element) => {
+        element.textContent = config.collaboration.title;
+      });
+      document.querySelectorAll("[data-collaboration-text]").forEach((element) => {
+        element.textContent = config.collaboration.text;
+      });
+    }
+
     document.querySelectorAll(".consent > span").forEach((element) => { element.textContent = config.forms.consentLabel; });
     document.querySelectorAll(".form-note").forEach((element) => { element.textContent = `Messages are sent securely to ${config.contact.email}.`; });
     document.querySelectorAll('select[name="inquiryType"]').forEach((select) => {
