@@ -753,7 +753,6 @@
       ".guide-card",
       ".value-card",
       ".readiness-card",
-      ".contact-info-card",
       ".all-services-cta",
     ].join(","));
     cards.forEach((card) => {
