@@ -83,6 +83,7 @@ window.SITE_CONFIG = {
     "submitLabel": "Send request",
     "sendingLabel": "Sending…",
     "errorMessage": "We could not send your request.",
+    "filePreviewMessage": "The page is open directly from a folder. Form delivery requires a local or hosted PHP server.",
     "formNote": "Messages are sent securely to {email}.",
     "successTitle": "Your request is on its way",
     "successIntro": "Thanks for contacting {siteName}.",

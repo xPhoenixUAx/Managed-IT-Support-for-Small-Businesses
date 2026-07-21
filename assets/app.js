@@ -222,6 +222,64 @@
   const formatTemplate = (value, variables = {}) => Object.entries(variables)
     .reduce((result, [key, replacement]) => result.replaceAll(`{${key}}`, replacement), value || "");
 
+  const isFilePreview = window.location.protocol === "file:";
+  const normalizeRoute = (value) => {
+    const normalized = value.replace(/\/+$/, "");
+    return normalized || "/";
+  };
+  const configuredRoutes = new Map(Object.entries(config.navigation?.routes || {})
+    .map(([source, destination]) => [normalizeRoute(source), destination]));
+  const configScript = [...document.scripts].find((script) => /(?:^|\/)config\.js(?:[?#].*)?$/.test(script.src));
+  const projectBaseUrl = configScript ? new URL(".", configScript.src) : new URL(".", window.location.href);
+
+  const physicalRouteForUrl = (url) => {
+    if (url.protocol !== projectBaseUrl.protocol || url.host !== projectBaseUrl.host) return "";
+    const basePath = decodeURIComponent(projectBaseUrl.pathname);
+    const targetPath = decodeURIComponent(url.pathname);
+    if (!targetPath.startsWith(basePath)) return "";
+    const relativePath = targetPath.slice(basePath.length).replace(/^\/+/, "");
+    if (relativePath === "index.html") return "/";
+    if (!relativePath.endsWith("/index.html")) return "";
+    return normalizeRoute(`/${relativePath.slice(0, -"/index.html".length)}`);
+  };
+
+  const configuredRouteForUrl = (url) => {
+    if (url.protocol === window.location.protocol && url.host === window.location.host) {
+      const directRoute = normalizeRoute(url.pathname);
+      if (configuredRoutes.has(directRoute)) return directRoute;
+      if (!isFilePreview) {
+        for (const [route, destination] of configuredRoutes) {
+          const destinationUrl = new URL(destination, window.location.origin);
+          if (normalizeRoute(destinationUrl.pathname) === directRoute) return route;
+        }
+      }
+    }
+    return physicalRouteForUrl(url);
+  };
+
+  const fileHrefForRoute = (route, sourceUrl = null) => {
+    const relativePath = route === "/"
+      ? "index.html"
+      : `${route.replace(/^\/+|\/+$/g, "")}/index.html`;
+    const destination = new URL(relativePath, projectBaseUrl);
+    if (sourceUrl) {
+      destination.search = sourceUrl.search;
+      destination.hash = sourceUrl.hash;
+    }
+    return destination.href;
+  };
+
+  const configuredRouteForValue = (value) => {
+    const candidate = new URL(value, "https://config-route.invalid");
+    const directRoute = normalizeRoute(candidate.pathname);
+    if (configuredRoutes.has(directRoute)) return directRoute;
+    for (const [route, destination] of configuredRoutes) {
+      const destinationUrl = new URL(destination, "https://config-route.invalid");
+      if (normalizeRoute(destinationUrl.pathname) === directRoute) return route;
+    }
+    return "";
+  };
+
   const applyConfig = () => {
     const renderedSiteName = document.querySelector(".brand-copy strong")?.textContent.trim() || "";
     const renderedCompanyName = document.querySelector(".footer-bottom p")?.textContent.split("·")[0].trim() || "";
@@ -259,20 +317,16 @@
     const socialImage = document.querySelector('meta[property="og:image"]');
     if (socialImage) socialImage.content = `${websiteBase}/og.png`;
 
-    const normalizeRoute = (value) => {
-      const normalized = value.replace(/\/+$/, "");
-      return normalized || "/";
-    };
-    const configuredRoutes = new Map(Object.entries(config.navigation?.routes || {})
-      .map(([source, destination]) => [normalizeRoute(source), destination]));
     document.querySelectorAll("a[href]").forEach((element) => {
       const rawHref = element.getAttribute("href") || "";
       if (!rawHref || rawHref.startsWith("#")) return;
       const source = new URL(rawHref, window.location.href);
-      if (source.origin !== window.location.origin) return;
-      const configuredUrl = configuredRoutes.get(normalizeRoute(source.pathname));
+      const route = configuredRouteForUrl(source);
+      const configuredUrl = configuredRoutes.get(route);
       if (!configuredUrl) return;
-      element.setAttribute("href", `${configuredUrl}${source.search}${source.hash}`);
+      element.setAttribute("href", isFilePreview
+        ? fileHrefForRoute(route, source)
+        : `${configuredUrl}${source.search}${source.hash}`);
     });
 
     const configuredNavigationItems = [
@@ -280,10 +334,8 @@
       ...(config.navigation?.legal || []),
       ...(config.navigation?.serviceLinks || []),
     ];
-    const labelsByRoute = new Map(configuredNavigationItems.map((item) => {
-      const destination = configuredRoutes.get(normalizeRoute(item.route)) || item.route;
-      return [normalizeRoute(new URL(destination, window.location.origin).pathname), item.label];
-    }));
+    const labelsByRoute = new Map(configuredNavigationItems
+      .map((item) => [normalizeRoute(item.route), item.label]));
     document.querySelectorAll([
       ".desktop-nav > a",
       ".nav-dropdown > a",
@@ -293,7 +345,7 @@
       ".footer-column:not(.footer-services):not(.footer-contact) > a",
       ".footer-services > a",
     ].join(",")).forEach((element) => {
-      const route = normalizeRoute(new URL(element.getAttribute("href"), window.location.origin).pathname);
+      const route = configuredRouteForUrl(new URL(element.getAttribute("href"), window.location.href));
       const configuredLabel = labelsByRoute.get(route);
       if (!configuredLabel) return;
       const icon = element.querySelector('[aria-hidden="true"]');
@@ -356,7 +408,9 @@
       element.textContent = formatTemplate(config.forms.formNote, formTemplateVariables);
     });
     document.querySelectorAll("[data-contact-form]").forEach((form) => {
-      form.action = config.forms.endpoint;
+      form.setAttribute("action", isFilePreview
+        ? new URL(config.forms.endpoint.replace(/^\/+/, ""), projectBaseUrl).href
+        : config.forms.endpoint);
       const submitButton = form.querySelector('button[type="submit"]');
       if (submitButton) submitButton.textContent = config.forms.submitLabel;
     });
@@ -468,7 +522,10 @@
       message.id = "cookie-banner-message";
       message.textContent = cookieSettings.message;
       const policy = document.createElement("a");
-      policy.href = cookieSettings.policyUrl;
+      const policyRoute = configuredRouteForValue(cookieSettings.policyUrl);
+      policy.href = isFilePreview && policyRoute
+        ? fileHrefForRoute(policyRoute)
+        : cookieSettings.policyUrl;
       policy.textContent = cookieSettings.policyLabel;
       copy.append(title, message, policy);
 
@@ -933,6 +990,9 @@
       submitButton.textContent = config.forms.sendingLabel;
 
       try {
+        if (isFilePreview) {
+          throw new Error(config.forms.filePreviewMessage || "Form delivery requires a PHP server.");
+        }
         const payload = Object.fromEntries(new FormData(form).entries());
         const response = await fetch(config.forms.endpoint, {
           method: "POST",
