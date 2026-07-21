@@ -600,6 +600,32 @@
     if (event.key === "Escape") closeMenu();
   });
 
+  const serviceCategories = [...document.querySelectorAll("[data-service-category]")];
+  if (serviceCategories.length) {
+    const compactServicesQuery = window.matchMedia("(max-width: 640px)");
+    const syncServiceCategories = (query) => {
+      serviceCategories.forEach((category, index) => {
+        category.open = query.matches ? index === 0 : true;
+      });
+    };
+
+    syncServiceCategories(compactServicesQuery);
+    if (typeof compactServicesQuery.addEventListener === "function") {
+      compactServicesQuery.addEventListener("change", syncServiceCategories);
+    } else {
+      compactServicesQuery.addListener(syncServiceCategories);
+    }
+
+    serviceCategories.forEach((category) => {
+      category.addEventListener("toggle", () => {
+        if (!compactServicesQuery.matches || !category.open) return;
+        serviceCategories.forEach((otherCategory) => {
+          if (otherCategory !== category) otherCategory.open = false;
+        });
+      });
+    });
+  }
+
   const revealItems = [...document.querySelectorAll(".reveal")];
   if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     const observer = new IntersectionObserver((entries) => {
