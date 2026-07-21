@@ -631,8 +631,223 @@
     });
   }
 
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  const initializeRevealChoreography = () => {
+    const staggerGroups = document.querySelectorAll([
+      ".trust-strip",
+      ".home-service-categories",
+      ".service-grid",
+      ".service-category-grid",
+      ".process-grid",
+      ".guide-grid",
+      ".value-grid",
+      ".readiness-grid",
+      ".contact-info-column",
+    ].join(","));
+
+    staggerGroups.forEach((group) => {
+      [...group.children]
+        .filter((element) => element.classList.contains("reveal"))
+        .forEach((element, index) => {
+          element.style.setProperty("--reveal-delay", `${Math.min(index, 5) * 90}ms`);
+        });
+    });
+
+    document.querySelectorAll([
+      ".story-grid > .reveal",
+      ".security-grid > .reveal",
+      ".service-intro-grid > .reveal",
+      ".service-spotlight-grid > .reveal",
+      ".partnership-grid > .reveal",
+      ".contact-page-grid > .reveal",
+    ].join(",")).forEach((element, index) => {
+      element.classList.add(index % 2 === 0 ? "reveal-from-left" : "reveal-from-right");
+    });
+  };
+
+  const initializeScrollMotion = () => {
+    const progress = document.createElement("div");
+    const progressBar = document.createElement("span");
+    progress.className = "scroll-progress";
+    progress.setAttribute("aria-hidden", "true");
+    progress.append(progressBar);
+    body.prepend(progress);
+
+    const header = document.querySelector(".site-header");
+    const parallaxMedia = [...document.querySelectorAll([
+      ".hero-image-wrap img",
+      ".page-hero-image img",
+      ".service-hero-image img",
+      ".story-image-large img",
+      ".story-image-small img",
+      ".security-image > img",
+      ".about-main-photo img",
+      ".partnership-image img",
+      ".service-spotlight-image img",
+    ].join(","))];
+    parallaxMedia.forEach((element) => element.classList.add("parallax-media"));
+
+    let frameRequested = false;
+    const update = () => {
+      const scrollable = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+      progressBar.style.transform = `scaleX(${Math.min(window.scrollY / scrollable, 1)})`;
+      header?.classList.toggle("is-scrolled", window.scrollY > 24);
+
+      if (!reducedMotion.matches) {
+        parallaxMedia.forEach((element) => {
+          const rect = element.getBoundingClientRect();
+          if (rect.bottom < -120 || rect.top > window.innerHeight + 120) return;
+          const centerOffset = (rect.top + rect.height / 2 - window.innerHeight / 2) / window.innerHeight;
+          element.style.setProperty("--parallax-y", `${Math.max(-20, Math.min(20, centerOffset * -24))}px`);
+        });
+      }
+      frameRequested = false;
+    };
+
+    const requestUpdate = () => {
+      if (frameRequested) return;
+      frameRequested = true;
+      window.requestAnimationFrame(update);
+    };
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+    update();
+  };
+
+  const initializePointerMotion = () => {
+    if (reducedMotion.matches || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+    document.querySelectorAll(".hero, .page-hero, .service-hero").forEach((hero) => {
+      hero.classList.add("motion-hero");
+      hero.addEventListener("pointermove", (event) => {
+        const rect = hero.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width - 0.5;
+        const y = (event.clientY - rect.top) / rect.height - 0.5;
+        hero.style.setProperty("--image-motion-x", `${x * -13}px`);
+        hero.style.setProperty("--image-motion-y", `${y * -10}px`);
+        hero.style.setProperty("--panel-motion-x", `${x * -4}px`);
+        hero.style.setProperty("--panel-motion-y", `${y * -3}px`);
+        hero.style.setProperty("--badge-motion-x", `${x * 12}px`);
+        hero.style.setProperty("--badge-motion-y", `${y * 10}px`);
+      });
+      hero.addEventListener("pointerleave", () => {
+        [
+          "--image-motion-x",
+          "--image-motion-y",
+          "--panel-motion-x",
+          "--panel-motion-y",
+          "--badge-motion-x",
+          "--badge-motion-y",
+        ].forEach((property) => hero.style.setProperty(property, "0px"));
+      });
+    });
+
+    const cards = document.querySelectorAll([
+      ".home-service-category-card",
+      ".service-card",
+      ".process-card",
+      ".guide-card",
+      ".value-card",
+      ".readiness-card",
+      ".contact-info-card",
+      ".all-services-cta",
+    ].join(","));
+    cards.forEach((card) => {
+      card.classList.add("interactive-card");
+      card.addEventListener("pointermove", (event) => {
+        const rect = card.getBoundingClientRect();
+        const x = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+        const y = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+        card.style.setProperty("--tilt-x", `${((0.5 - y) * 5).toFixed(2)}deg`);
+        card.style.setProperty("--tilt-y", `${((x - 0.5) * 6).toFixed(2)}deg`);
+        card.style.setProperty("--pointer-x", `${(x * 100).toFixed(1)}%`);
+        card.style.setProperty("--pointer-y", `${(y * 100).toFixed(1)}%`);
+        card.classList.add("is-interacting");
+      });
+      card.addEventListener("pointerleave", () => {
+        card.classList.remove("is-interacting");
+        card.style.setProperty("--tilt-x", "0deg");
+        card.style.setProperty("--tilt-y", "0deg");
+      });
+    });
+
+    document.querySelectorAll([
+      ".hero-actions .button",
+      ".all-services-cta .button",
+      ".service-cta .button",
+      ".contact-next .button",
+    ].join(",")).forEach((button) => {
+      button.classList.add("magnetic-button");
+      button.addEventListener("pointermove", (event) => {
+        const rect = button.getBoundingClientRect();
+        button.style.setProperty("--magnetic-x", `${((event.clientX - rect.left) / rect.width - 0.5) * 8}px`);
+        button.style.setProperty("--magnetic-y", `${((event.clientY - rect.top) / rect.height - 0.5) * 6}px`);
+      });
+      button.addEventListener("pointerleave", () => {
+        button.style.setProperty("--magnetic-x", "0px");
+        button.style.setProperty("--magnetic-y", "0px");
+      });
+    });
+  };
+
+  const initializeSwipeFeedback = () => {
+    document.querySelectorAll(".swipe-row").forEach((row) => {
+      if (row.nextElementSibling?.classList.contains("swipe-feedback")) return;
+      const feedback = document.createElement("div");
+      const label = document.createElement("span");
+      const track = document.createElement("span");
+      const fill = document.createElement("i");
+      feedback.className = "swipe-feedback";
+      feedback.setAttribute("aria-hidden", "true");
+      label.textContent = "Swipe to explore";
+      track.className = "swipe-feedback__track";
+      track.append(fill);
+      feedback.append(label, track);
+      row.insertAdjacentElement("afterend", feedback);
+
+      let frameRequested = false;
+      const update = () => {
+        const maximum = Math.max(row.scrollWidth - row.clientWidth, 1);
+        fill.style.transform = `scaleX(${Math.min(row.scrollLeft / maximum, 1)})`;
+        frameRequested = false;
+      };
+      const requestUpdate = () => {
+        if (frameRequested) return;
+        frameRequested = true;
+        window.requestAnimationFrame(update);
+      };
+      row.addEventListener("scroll", requestUpdate, { passive: true });
+      window.addEventListener("resize", requestUpdate);
+      update();
+    });
+  };
+
+  const initializeSectionMotion = () => {
+    const sections = document.querySelectorAll(".process-grid, .trust-strip, .mini-outcomes");
+    if (!("IntersectionObserver" in window) || reducedMotion.matches) {
+      sections.forEach((section) => section.classList.add("motion-active"));
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("motion-active");
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.25 });
+    sections.forEach((section) => observer.observe(section));
+  };
+
+  body.classList.toggle("motion-ready", !reducedMotion.matches);
+  initializeRevealChoreography();
+  initializeScrollMotion();
+  initializePointerMotion();
+  initializeSwipeFeedback();
+  initializeSectionMotion();
+
   const revealItems = [...document.querySelectorAll(".reveal")];
-  if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  if ("IntersectionObserver" in window && !reducedMotion.matches) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;

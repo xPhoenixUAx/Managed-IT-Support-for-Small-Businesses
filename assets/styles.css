@@ -709,3 +709,121 @@ body.page-transitioning { cursor: progress; }
   .footer-services { display: none; }
   .footer-bottom { flex-direction: column; gap: 8px; }
 }
+
+/* Interaction and motion layer */
+.scroll-progress { position: fixed; z-index: 2100; top: 0; left: 0; width: 100%; height: 4px; overflow: hidden; pointer-events: none; }
+.scroll-progress span { display: block; width: 100%; height: 100%; background: linear-gradient(90deg, var(--blue), #58d6c4); box-shadow: 0 0 14px rgba(20,120,237,.46); transform: scaleX(0); transform-origin: left center; will-change: transform; }
+
+.site-header, .header-inner, .desktop-nav > a, .nav-dropdown > a, .brand-mark { transition: min-height .28s ease, padding .28s ease, background .28s ease, box-shadow .28s ease, transform .28s ease; }
+.site-header.is-scrolled { background: rgba(230,246,249,.9); box-shadow: 0 12px 34px rgba(16,47,70,.1); backdrop-filter: blur(16px); }
+.site-header.is-scrolled .header-inner { min-height: 80px; }
+.site-header.is-scrolled .desktop-nav > a, .site-header.is-scrolled .nav-dropdown > a { padding-block: 28px; }
+.site-header.is-scrolled .brand-mark { transform: scale(.88) rotate(-4deg); }
+.brand-mark::after { transition: transform .35s cubic-bezier(.2,.8,.2,1); }
+.brand:hover .brand-mark::after { transform: translate(-5px, -5px) scale(1.15); }
+.menu-toggle { transition: background .25s ease, transform .28s cubic-bezier(.2,.8,.2,1), box-shadow .25s ease; }
+.menu-toggle[aria-expanded="true"] { background: var(--blue); box-shadow: 0 12px 26px rgba(20,120,237,.25); transform: rotate(90deg); }
+.mobile-services-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+.desktop-nav > a, .nav-dropdown > a { position: relative; }
+.desktop-nav > a::after, .nav-dropdown > a::after { position: absolute; right: 0; bottom: 28px; left: 0; height: 2px; border-radius: 2px; background: var(--blue); content: ""; transform: scaleX(0); transform-origin: right center; transition: transform .28s ease; }
+.desktop-nav > a:hover::after, .desktop-nav > a.active::after, .nav-dropdown:hover > a::after { transform: scaleX(1); transform-origin: left center; }
+
+.reveal { transition-delay: var(--reveal-delay, 0ms); }
+.reveal.reveal-from-left { transform: translate3d(-46px, 10px, 0); }
+.reveal.reveal-from-right { transform: translate3d(46px, 10px, 0); }
+.reveal.reveal-from-left.is-visible, .reveal.reveal-from-right.is-visible { transform: none; }
+
+.motion-ready .hero-panel .reveal.is-visible > *,
+.motion-ready .page-hero-panel .reveal.is-visible > *,
+.motion-ready .service-hero-panel .reveal.is-visible > * { animation: hero-copy-in .72s cubic-bezier(.2,.78,.25,1) both; }
+.motion-ready .hero-panel .reveal.is-visible > :nth-child(2),
+.motion-ready .page-hero-panel .reveal.is-visible > :nth-child(2),
+.motion-ready .service-hero-panel .reveal.is-visible > :nth-child(2) { animation-delay: .08s; }
+.motion-ready .hero-panel .reveal.is-visible > :nth-child(3),
+.motion-ready .page-hero-panel .reveal.is-visible > :nth-child(3),
+.motion-ready .service-hero-panel .reveal.is-visible > :nth-child(3) { animation-delay: .16s; }
+.motion-ready .hero-panel .reveal.is-visible > :nth-child(n+4),
+.motion-ready .page-hero-panel .reveal.is-visible > :nth-child(n+4),
+.motion-ready .service-hero-panel .reveal.is-visible > :nth-child(n+4) { animation-delay: .24s; }
+
+.parallax-media { --parallax-y: 0px; transform: scale(1.055) translate3d(0, var(--parallax-y), 0); transition: transform .16s linear; will-change: transform; }
+.motion-hero .hero-image-wrap .parallax-media,
+.motion-hero .page-hero-image .parallax-media,
+.motion-hero .service-hero-image .parallax-media { transform: scale(1.075) translate3d(var(--image-motion-x, 0px), calc(var(--parallax-y) + var(--image-motion-y, 0px)), 0); transition: transform .22s ease-out; }
+.motion-hero .hero-panel, .motion-hero .page-hero-panel, .motion-hero .service-hero-panel { transform: translate3d(var(--panel-motion-x, 0px), var(--panel-motion-y, 0px), 0); transition: transform .3s ease-out; }
+.motion-hero .hero-badge, .motion-hero .page-hero-accent { transform: translate3d(var(--badge-motion-x, 0px), var(--badge-motion-y, 0px), 0); transition: transform .3s ease-out; }
+.hero-badge, .page-hero-accent, .floating-note, .story-fact, .about-note { animation: floating-note 5.5s ease-in-out infinite; }
+.floating-note { animation-delay: -1.4s; }
+.story-fact, .about-note { animation-delay: -2.6s; }
+
+.interactive-card { --tilt-x: 0deg; --tilt-y: 0deg; --pointer-x: 50%; --pointer-y: 50%; position: relative; isolation: isolate; transform-style: preserve-3d; will-change: transform; }
+.interactive-card::after { position: absolute; z-index: 4; inset: 0; border-radius: inherit; background: radial-gradient(360px circle at var(--pointer-x) var(--pointer-y), rgba(88,214,196,.2), transparent 46%); content: ""; opacity: 0; pointer-events: none; transition: opacity .24s ease; }
+.interactive-card.is-interacting { transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-8px) !important; box-shadow: 0 28px 72px rgba(16,47,70,.18); transition: transform .14s ease-out, box-shadow .2s ease !important; }
+.interactive-card.is-interacting::after { opacity: 1; }
+
+.button { position: relative; overflow: hidden; }
+.button::after { position: absolute; inset: -50% auto -50% -55%; width: 32%; background: linear-gradient(90deg, transparent, rgba(255,255,255,.45), transparent); content: ""; pointer-events: none; transform: skewX(-18deg) translateX(-220%); transition: transform .62s ease; }
+.button:hover::after { transform: skewX(-18deg) translateX(620%); }
+.magnetic-button { --magnetic-x: 0px; --magnetic-y: 0px; transform: translate3d(var(--magnetic-x), var(--magnetic-y), 0); }
+.magnetic-button:hover { transform: translate3d(var(--magnetic-x), calc(var(--magnetic-y) - 3px), 0); }
+
+.process-grid { position: relative; counter-reset: process-step; }
+.process-grid::before { position: absolute; top: 65px; right: 12%; left: 12%; height: 2px; background: linear-gradient(90deg, transparent, #86caef 14%, var(--blue) 50%, #86caef 86%, transparent); content: ""; transform: scaleX(0); transform-origin: left; transition: transform 1.1s cubic-bezier(.2,.75,.25,1); }
+.process-grid.motion-active::before { transform: scaleX(1); }
+.process-card { counter-increment: process-step; }
+.process-card::before { position: absolute; top: 25px; right: 28px; color: rgba(20,120,237,.17); content: "0" counter(process-step); font-family: var(--font-serif); font-size: 3.2rem; line-height: 1; transition: color .25s ease, transform .25s ease; }
+.process-card:hover::before { color: rgba(20,120,237,.38); transform: translateY(-4px); }
+.process-card.is-visible .process-icon, .trust-item.is-visible > svg, .trust-item.is-visible > .icon-glyph { animation: icon-pop .58s cubic-bezier(.2,.9,.28,1.35) both; animation-delay: calc(var(--reveal-delay, 0ms) + 180ms); }
+.mini-outcomes.motion-active > div { animation: outcome-pulse .6s ease both; }
+.mini-outcomes.motion-active > div:nth-child(2) { animation-delay: .12s; }
+
+.service-category[open] .service-category-content, .fit-faq details[open] > p { animation: disclosure-in .38s cubic-bezier(.2,.78,.25,1) both; }
+.service-category-summary:active, .fit-faq summary:active { transform: scale(.992); }
+
+.contact-form label > span { transition: color .2s ease, transform .2s ease; }
+.contact-form label:focus-within > span { color: var(--blue); transform: translateX(3px); }
+.contact-form input:not([type="checkbox"]):hover, .contact-form select:hover, .contact-form textarea:hover { border-color: #8cb8ca; }
+.contact-form input:focus, .contact-form select:focus, .contact-form textarea:focus { transform: translateY(-1px); }
+
+.swipe-feedback { display: none; align-items: center; justify-content: space-between; gap: 14px; margin-top: 4px; color: var(--ink-soft); font-size: .7rem; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
+.swipe-feedback__track { width: 92px; height: 3px; overflow: hidden; border-radius: 999px; background: rgba(16,47,70,.13); }
+.swipe-feedback__track i { display: block; width: 100%; height: 100%; border-radius: inherit; background: var(--blue); transform: scaleX(0); transform-origin: left; }
+
+@keyframes hero-copy-in { from { opacity: 0; transform: translateY(22px); } }
+@keyframes floating-note { 0%, 100% { translate: 0 0; } 50% { translate: 0 -9px; } }
+@keyframes icon-pop { from { opacity: 0; transform: scale(.62) rotate(-12deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+@keyframes outcome-pulse { from { opacity: 0; transform: translateX(-18px); } }
+@keyframes disclosure-in { from { opacity: 0; transform: translateY(-10px); } }
+@keyframes mobile-item-in { from { opacity: 0; transform: translateX(-16px); } }
+
+@media (max-width: 900px) {
+  .site-header.is-scrolled .header-inner { min-height: 72px; }
+  .site-header.is-scrolled .brand-mark { transform: scale(.92) rotate(-3deg); }
+  .motion-hero .hero-panel, .motion-hero .page-hero-panel, .motion-hero .service-hero-panel,
+  .motion-hero .hero-badge, .motion-hero .page-hero-accent { transform: none; }
+  .process-grid::before { display: none; }
+  .mobile-menu.open nav > *, .mobile-menu.open .mobile-contact { animation: mobile-item-in .4s cubic-bezier(.2,.8,.2,1) both; }
+  .mobile-menu.open nav > :nth-child(2) { animation-delay: .05s; }
+  .mobile-menu.open nav > :nth-child(3) { animation-delay: .1s; }
+  .mobile-menu.open nav > :nth-child(4) { animation-delay: .15s; }
+  .mobile-menu.open nav > :nth-child(5) { animation-delay: .2s; }
+  .mobile-menu.open .mobile-contact { animation-delay: .25s; }
+}
+
+@media (max-width: 640px) {
+  .scroll-progress { height: 3px; }
+  .interactive-card.is-interacting { transform: none !important; }
+  .hero-badge, .page-hero-accent, .floating-note, .story-fact, .about-note { animation-duration: 6.5s; }
+  .swipe-feedback { display: flex; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress span { transition: none; }
+  .parallax-media, .motion-hero .parallax-media, .interactive-card, .magnetic-button { transform: none !important; }
+  .hero-badge, .page-hero-accent, .floating-note, .story-fact, .about-note { animation: none; }
+  .process-grid::before { transform: scaleX(1); transition: none; }
+  .motion-ready .hero-panel .reveal.is-visible > *,
+  .motion-ready .page-hero-panel .reveal.is-visible > *,
+  .motion-ready .service-hero-panel .reveal.is-visible > * { animation: none; }
+}
