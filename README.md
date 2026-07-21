@@ -4,7 +4,7 @@ Static website built with plain HTML, CSS, and JavaScript. Form delivery is hand
 
 ## Updating shared site data
 
-1. Edit `config.js`.
+1. Edit `config/config.js`.
 2. Regenerate the SEO-ready HTML:
 
    ```sh
@@ -17,7 +17,7 @@ Static website built with plain HTML, CSS, and JavaScript. Form delivery is hand
    php tools/sync-config.php --check
    ```
 
-The generated values are intentionally written into all HTML pages so search engines and visitors without JavaScript receive complete content. Do not manually edit shared company, contact, navigation, footer, or form values in the HTML files; change `config.js` and run the sync command instead.
+The generated values are intentionally written into all HTML pages so search engines and visitors without JavaScript receive complete content. Do not manually edit shared company, contact, navigation, footer, or form values in the HTML files; change `config/config.js` and run the sync command instead.
 
 ## Local preview
 
@@ -31,4 +31,4 @@ Then open `http://127.0.0.1:8000/`.
 
 ## Deployment
 
-Upload the repository contents to a PHP-enabled web root. The recipient mailbox and sender address are configured in `config.js`; the hosting environment must allow PHP `mail()` delivery.
+Upload the repository contents to a PHP-enabled web root. The recipient mailbox and sender address are configured in `config/config.js`; the hosting environment must allow PHP `mail()` delivery.

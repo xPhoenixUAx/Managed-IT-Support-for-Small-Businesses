@@ -6,7 +6,7 @@ if (PHP_SAPI !== 'cli') {
     exit;
 }
 
-const GENERATED_NOTICE = ' Generated from config.js by tools/sync-config.php. Do not edit shared values in this file. ';
+const GENERATED_NOTICE = ' Generated from config/config.js by tools/sync-config.php. Do not edit shared values in this file. ';
 
 function fail(string $message): never
 {
@@ -18,10 +18,10 @@ function loadConfig(string $path): array
 {
     $source = file_get_contents($path);
     if ($source === false || !preg_match('/window\.SITE_CONFIG\s*=\s*(\{.*\})\s*;\s*$/s', $source, $matches)) {
-        fail('Unable to read the JSON-compatible object from config.js.');
+        fail('Unable to read the JSON-compatible object from config/config.js.');
     }
     $config = json_decode($matches[1], true);
-    if (!is_array($config)) fail('config.js contains invalid JSON-compatible data.');
+    if (!is_array($config)) fail('config/config.js contains invalid JSON-compatible data.');
     return $config;
 }
 
@@ -211,6 +211,14 @@ function renderPage(string $file, string $root, array $config): string
     $ui = $config['ui'];
     $routes = [];
     foreach ($navigation['routes'] as $route => $destination) $routes[normalizeRoute((string) $route)] = (string) $destination;
+
+    $relativeFile = str_replace('\\', '/', substr($file, strlen($root) + 1));
+    $relativeDirectory = dirname($relativeFile);
+    $pageDepth = $relativeDirectory === '.' ? 0 : substr_count($relativeDirectory, '/') + 1;
+    $configScriptSrc = str_repeat('../', $pageDepth) . 'config/config.js';
+    foreach (nodeList($xpath, "//script[contains(@src, 'config.js')]") as $script) {
+        if ($script instanceof DOMElement) $script->setAttribute('src', $configScriptSrc);
+    }
 
     $siteNode = firstNode($xpath, "//*[" . classQuery('brand-copy') . "]/strong[1]");
     $oldSiteName = $siteNode !== null ? trim($siteNode->textContent) : '';
@@ -404,11 +412,12 @@ function renderPage(string $file, string $root, array $config): string
         if ($node instanceof DOMElement) $node->setAttribute('aria-label', $ui['openMenuLabel']);
     }
 
-    $noticeExists = false;
     foreach (iterator_to_array($dom->childNodes) as $child) {
-        if ($child->nodeType === XML_COMMENT_NODE && trim((string) $child->nodeValue) === trim(GENERATED_NOTICE)) $noticeExists = true;
+        if ($child->nodeType === XML_COMMENT_NODE && str_contains((string) $child->nodeValue, 'Generated from ')) {
+            $dom->removeChild($child);
+        }
     }
-    if (!$noticeExists && $dom->documentElement !== null) $dom->insertBefore($dom->createComment(GENERATED_NOTICE), $dom->documentElement);
+    if ($dom->documentElement !== null) $dom->insertBefore($dom->createComment(GENERATED_NOTICE), $dom->documentElement);
 
     $output = $dom->saveHTML();
     if ($output === false) fail('Unable to serialize ' . $file);
@@ -417,7 +426,7 @@ function renderPage(string $file, string $root, array $config): string
 }
 
 $root = dirname(__DIR__);
-$config = loadConfig($root . '/config.js');
+$config = loadConfig($root . '/config/config.js');
 $checkOnly = in_array('--check', $argv, true);
 $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS));
 $files = [];
@@ -437,10 +446,10 @@ foreach ($files as $file) {
 }
 
 if ($checkOnly && $changed !== []) {
-    fwrite(STDERR, "Generated HTML is out of sync with config.js:\n- " . implode("\n- ", $changed) . PHP_EOL);
+    fwrite(STDERR, "Generated HTML is out of sync with config/config.js:\n- " . implode("\n- ", $changed) . PHP_EOL);
     exit(1);
 }
 
 echo $checkOnly
-    ? 'All ' . count($files) . " HTML pages are synchronized with config.js.\n"
+    ? 'All ' . count($files) . " HTML pages are synchronized with config/config.js.\n"
     : 'Synchronized ' . count($files) . ' HTML pages; updated ' . count($changed) . ".\n";

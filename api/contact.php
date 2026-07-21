@@ -24,7 +24,7 @@ function loadSiteConfig(string $path): array
     return $config;
 }
 
-$siteConfig = loadSiteConfig(__DIR__ . '/../config.js');
+$siteConfig = loadSiteConfig(__DIR__ . '/../config/config.js');
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     header('Allow: POST');

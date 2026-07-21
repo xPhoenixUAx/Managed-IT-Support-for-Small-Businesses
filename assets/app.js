@@ -231,7 +231,7 @@
   const configuredRoutes = new Map(Object.entries(config.navigation?.routes || {})
     .map(([source, destination]) => [normalizeRoute(source), destination]));
   const configScript = [...document.scripts].find((script) => /(?:^|\/)config\.js(?:[?#].*)?$/.test(script.src));
-  const projectBaseUrl = configScript ? new URL(".", configScript.src) : new URL(".", window.location.href);
+  const projectBaseUrl = configScript ? new URL("../", configScript.src) : new URL(".", window.location.href);
 
   const physicalRouteForUrl = (url) => {
     if (url.protocol !== projectBaseUrl.protocol || url.host !== projectBaseUrl.host) return "";
