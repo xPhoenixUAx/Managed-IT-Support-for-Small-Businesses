@@ -394,7 +394,6 @@ body.page-transitioning { cursor: progress; }
 .fit-faq summary .lucide { width: var(--icon-sm); height: var(--icon-sm); stroke-width: 2; }
 .fit-faq details[open] summary span, .fit-faq details[open] summary .lucide { transform: rotate(45deg); }
 .fit-faq details p { margin: -5px 0 24px; color: var(--ink-soft); }
-.safety-note { margin-top: 28px; padding: 16px; border: 1px solid rgba(255,255,255,.28); border-radius: 12px; font-size: .78rem; }
 .next-service { background: var(--ink); color: white; }
 .next-service .shell { min-height: 150px; display: flex; align-items: center; justify-content: space-between; gap: 30px; }
 .next-service span { color: #9db6c2; font-size: .75rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
@@ -531,7 +530,7 @@ body.page-transitioning { cursor: progress; }
   .mobile-menu nav { display: flex; flex-direction: column; }
   .mobile-menu nav > a, .mobile-services-toggle { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border: 0; border-bottom: 1px solid #bddce2; background: transparent; color: var(--ink); font-family: var(--font-serif); font-size: 1.55rem; text-align: left; cursor: pointer; }
   .mobile-services-toggle svg { transition: transform .2s; }
-  .mobile-services-toggle svg.rotated { transform: rotate(180deg); }
+  .mobile-services-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
   .mobile-services { max-height: 0; overflow: hidden; transition: max-height .4s ease; }
   .mobile-services.open { max-height: 720px; }
   .mobile-services a { display: block; padding: 9px 14px; border-left: 2px solid var(--blue); color: var(--ink-soft); font-size: .82rem; }

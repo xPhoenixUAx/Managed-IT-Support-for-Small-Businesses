@@ -219,6 +219,9 @@
 
   initializeIcons();
 
+  const formatTemplate = (value, variables = {}) => Object.entries(variables)
+    .reduce((result, [key, replacement]) => result.replaceAll(`{${key}}`, replacement), value || "");
+
   const applyConfig = () => {
     const renderedSiteName = document.querySelector(".brand-copy strong")?.textContent.trim() || "";
     const renderedCompanyName = document.querySelector(".footer-bottom p")?.textContent.split("·")[0].trim() || "";
@@ -245,6 +248,9 @@
       document.querySelectorAll("meta[content]").forEach((meta) => {
         meta.content = replaceConfiguredNames(meta.content);
       });
+      document.querySelectorAll("[aria-label]").forEach((element) => {
+        element.setAttribute("aria-label", replaceConfiguredNames(element.getAttribute("aria-label") || ""));
+      });
     }
 
     const websiteBase = config.contact.website.replace(/\/$/, "");
@@ -253,20 +259,47 @@
     const socialImage = document.querySelector('meta[property="og:image"]');
     if (socialImage) socialImage.content = `${websiteBase}/og.png`;
 
-    const configuredLinks = [
+    const normalizeRoute = (value) => {
+      const normalized = value.replace(/\/+$/, "");
+      return normalized || "/";
+    };
+    const configuredRoutes = new Map(Object.entries(config.navigation?.routes || {})
+      .map(([source, destination]) => [normalizeRoute(source), destination]));
+    document.querySelectorAll("a[href]").forEach((element) => {
+      const rawHref = element.getAttribute("href") || "";
+      if (!rawHref || rawHref.startsWith("#")) return;
+      const source = new URL(rawHref, window.location.href);
+      if (source.origin !== window.location.origin) return;
+      const configuredUrl = configuredRoutes.get(normalizeRoute(source.pathname));
+      if (!configuredUrl) return;
+      element.setAttribute("href", `${configuredUrl}${source.search}${source.hash}`);
+    });
+
+    const configuredNavigationItems = [
       ...(config.navigation?.primary || []),
       ...(config.navigation?.legal || []),
+      ...(config.navigation?.serviceLinks || []),
     ];
-    const urlsByLabel = new Map(configuredLinks.map((link) => [link.label, link.url]));
-    document.querySelectorAll("a").forEach((element) => {
-      const configuredUrl = urlsByLabel.get(element.textContent.trim());
-      if (configuredUrl) element.href = configuredUrl;
+    const labelsByRoute = new Map(configuredNavigationItems.map((item) => {
+      const destination = configuredRoutes.get(normalizeRoute(item.route)) || item.route;
+      return [normalizeRoute(new URL(destination, window.location.origin).pathname), item.label];
+    }));
+    document.querySelectorAll([
+      ".desktop-nav > a",
+      ".nav-dropdown > a",
+      ".dropdown-panel > a",
+      ".mobile-menu nav > a",
+      ".mobile-services > a",
+      ".footer-column:not(.footer-services):not(.footer-contact) > a",
+      ".footer-services > a",
+    ].join(",")).forEach((element) => {
+      const route = normalizeRoute(new URL(element.getAttribute("href"), window.location.origin).pathname);
+      const configuredLabel = labelsByRoute.get(route);
+      if (!configuredLabel) return;
+      const icon = element.querySelector('[aria-hidden="true"]');
+      if (icon) element.replaceChildren(document.createTextNode(`${configuredLabel} `), icon);
+      else element.textContent = configuredLabel;
     });
-    if (config.navigation?.supportUrl) {
-      document.querySelectorAll('a[href^="/services/request-technical-support"]').forEach((element) => {
-        element.href = config.navigation.supportUrl;
-      });
-    }
 
     document.querySelectorAll(".brand-mark").forEach((element) => { element.textContent = config.brand.shortMark; });
     document.querySelectorAll(".brand-copy strong").forEach((element) => { element.textContent = config.brand.siteName; });
@@ -275,7 +308,7 @@
 
     document.querySelectorAll('a[href^="mailto:"]').forEach((element) => {
       element.href = `mailto:${config.contact.email}`;
-      const icon = element.querySelector(".icon-glyph");
+      const icon = element.querySelector('[aria-hidden="true"]');
       if (icon) element.replaceChildren(icon, document.createTextNode(` ${config.contact.email}`));
       else element.textContent = config.contact.email;
     });
@@ -315,8 +348,18 @@
       });
     }
 
-    document.querySelectorAll(".consent > span").forEach((element) => { element.textContent = config.forms.consentLabel; });
-    document.querySelectorAll(".form-note").forEach((element) => { element.textContent = `Messages are sent securely to ${config.contact.email}.`; });
+    const formTemplateVariables = { email: config.contact.email, siteName: config.brand.siteName };
+    document.querySelectorAll(".consent > span").forEach((element) => {
+      element.textContent = formatTemplate(config.forms.consentLabel, formTemplateVariables);
+    });
+    document.querySelectorAll(".form-note").forEach((element) => {
+      element.textContent = formatTemplate(config.forms.formNote, formTemplateVariables);
+    });
+    document.querySelectorAll("[data-contact-form]").forEach((form) => {
+      form.action = config.forms.endpoint;
+      const submitButton = form.querySelector('button[type="submit"]');
+      if (submitButton) submitButton.textContent = config.forms.submitLabel;
+    });
     document.querySelectorAll('select[name="inquiryType"]').forEach((select) => {
       const selectedValue = select.value;
       const serviceTypes = config.forms.serviceTypes || [];
@@ -326,7 +369,7 @@
 
       const placeholder = document.createElement("option");
       placeholder.value = "";
-      placeholder.textContent = "Select a request type";
+      placeholder.textContent = config.forms.selectPlaceholder;
       placeholder.disabled = true;
       placeholder.selected = !allowedTypes.includes(selectedValue);
       options.push(placeholder);
@@ -355,8 +398,10 @@
       const message = modal.querySelector("h2 + p");
       const delivered = modal.querySelector(".modal-email");
       if (title) title.textContent = config.forms.successTitle;
-      if (message) message.textContent = `Thanks for contacting ${config.brand.siteName}. ${config.forms.successMessage}`;
-      if (delivered) delivered.textContent = `A copy was delivered to ${config.contact.email}.`;
+      if (message) {
+        message.textContent = `${formatTemplate(config.forms.successIntro, formTemplateVariables)} ${config.forms.successMessage}`;
+      }
+      if (delivered) delivered.textContent = formatTemplate(config.forms.successDelivery, formTemplateVariables);
     });
   };
 
@@ -569,12 +614,13 @@
   const mobileMenu = document.querySelector("[data-mobile-menu]");
   const servicesButton = document.querySelector("[data-services-toggle]");
   const mobileServices = document.querySelector("[data-mobile-services]");
+  if (mobileMenu) mobileMenu.inert = true;
 
   const closeMenu = () => {
     menuButton?.setAttribute("aria-expanded", "false");
     menuButton?.setAttribute("aria-label", "Open menu");
     mobileMenu?.classList.remove("open");
-    mobileMenu?.setAttribute("aria-hidden", "true");
+    if (mobileMenu) mobileMenu.inert = true;
     servicesButton?.setAttribute("aria-expanded", "false");
     mobileServices?.classList.remove("open");
     body.classList.remove("menu-open");
@@ -586,7 +632,7 @@
     menuButton.setAttribute("aria-expanded", String(opening));
     menuButton.setAttribute("aria-label", opening ? "Close menu" : "Open menu");
     mobileMenu?.classList.toggle("open", opening);
-    mobileMenu?.setAttribute("aria-hidden", String(!opening));
+    if (mobileMenu) mobileMenu.inert = !opening;
     body.classList.toggle("menu-open", opening);
     body.classList.toggle("menu-lock", opening);
   });
@@ -884,7 +930,7 @@
       status.hidden = true;
       status.textContent = "";
       submitButton.disabled = true;
-      submitButton.textContent = "Sending…";
+      submitButton.textContent = config.forms.sendingLabel;
 
       try {
         const payload = Object.fromEntries(new FormData(form).entries());
@@ -894,12 +940,12 @@
           body: JSON.stringify(payload),
         });
         const result = await response.json();
-        if (!response.ok || !result.ok) throw new Error(result.error || "We could not send your request.");
+        if (!response.ok || !result.ok) throw new Error(result.error || config.forms.errorMessage);
         form.reset();
         showSuccess(form);
       } catch (error) {
         status.innerHTML = "";
-        status.append(document.createTextNode(`${error.message || "We could not send your request."} `));
+        status.append(document.createTextNode(`${error.message || config.forms.errorMessage} `));
         const fallback = document.createElement("a");
         fallback.href = `mailto:${config.contact.email}`;
         fallback.textContent = `Email ${config.contact.email}`;
@@ -907,7 +953,7 @@
         status.hidden = false;
       } finally {
         submitButton.disabled = false;
-        submitButton.textContent = "Send request";
+        submitButton.textContent = config.forms.submitLabel;
       }
     });
   });

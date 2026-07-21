@@ -31,6 +31,10 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     respond(405, ['ok' => false, 'error' => 'Method not allowed.']);
 }
 
+if ((int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 65536) {
+    respond(413, ['ok' => false, 'error' => 'The submitted request is too large.']);
+}
+
 $contentType = strtolower($_SERVER['CONTENT_TYPE'] ?? '');
 if (str_contains($contentType, 'application/json')) {
     $payload = json_decode((string) file_get_contents('php://input'), true);
@@ -99,7 +103,7 @@ $headers = [
 ];
 
 $encodedSubject = '=?UTF-8?B?' . base64_encode($subject) . '?=';
-$sent = mail($recipient, $encodedSubject, $body, implode("\r\n", $headers));
+$sent = @mail($recipient, $encodedSubject, $body, implode("\r\n", $headers));
 
 if (!$sent) {
     respond(500, ['ok' => false, 'error' => 'The message could not be delivered. Please email ' . $recipient . ' directly.']);

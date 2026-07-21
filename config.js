@@ -13,18 +13,49 @@ window.SITE_CONFIG = {
     "companyId": "TX-IT-29841"
   },
   "navigation": {
+    "routes": {
+      "/": "/",
+      "/about": "/about/",
+      "/services": "/services/",
+      "/contact": "/contact/",
+      "/privacy-policy": "/privacy-policy/",
+      "/terms": "/terms/",
+      "/cookie-policy": "/cookie-policy/",
+      "/services/remote-it-support": "/services/remote-it-support/",
+      "/services/device-management": "/services/device-management/",
+      "/services/microsoft-365-setup": "/services/microsoft-365-setup/",
+      "/services/google-workspace-setup": "/services/google-workspace-setup/",
+      "/services/business-email-setup": "/services/business-email-setup/",
+      "/services/cloud-backup": "/services/cloud-backup/",
+      "/services/network-wifi-support": "/services/network-wifi-support/",
+      "/services/cybersecurity-basics": "/services/cybersecurity-basics/",
+      "/services/it-support-plans": "/services/it-support-plans/",
+      "/services/request-technical-support": "/services/request-technical-support/"
+    },
     "primary": [
-      { "label": "Home", "url": "/" },
-      { "label": "About", "url": "/about/" },
-      { "label": "Services", "url": "/services/" },
-      { "label": "Contact", "url": "/contact/" }
+      { "label": "Home", "route": "/" },
+      { "label": "About", "route": "/about" },
+      { "label": "Services", "route": "/services" },
+      { "label": "Contact", "route": "/contact" }
     ],
     "legal": [
-      { "label": "Privacy Policy", "url": "/privacy-policy/" },
-      { "label": "Terms & Conditions", "url": "/terms/" },
-      { "label": "Cookie Policy", "url": "/cookie-policy/" }
+      { "label": "Privacy Policy", "route": "/privacy-policy" },
+      { "label": "Terms & Conditions", "route": "/terms" },
+      { "label": "Cookie Policy", "route": "/cookie-policy" }
     ],
-    "supportUrl": "/services/request-technical-support/"
+    "serviceLinks": [
+      { "label": "All services", "route": "/services" },
+      { "label": "Remote IT Support", "route": "/services/remote-it-support" },
+      { "label": "Device Management", "route": "/services/device-management" },
+      { "label": "Microsoft 365 Setup", "route": "/services/microsoft-365-setup" },
+      { "label": "Google Workspace Setup", "route": "/services/google-workspace-setup" },
+      { "label": "Business Email Setup", "route": "/services/business-email-setup" },
+      { "label": "Cloud Backup", "route": "/services/cloud-backup" },
+      { "label": "Network & Wi-Fi Support", "route": "/services/network-wifi-support" },
+      { "label": "Cybersecurity Basics", "route": "/services/cybersecurity-basics" },
+      { "label": "IT Support Plans", "route": "/services/it-support-plans" },
+      { "label": "Request Technical Support", "route": "/services/request-technical-support" }
+    ]
   },
   "forms": {
     "endpoint": "/api/contact.php",
@@ -48,9 +79,16 @@ window.SITE_CONFIG = {
       "Advertising or partnership",
       "General information"
     ],
+    "selectPlaceholder": "Select a request type",
+    "submitLabel": "Send request",
+    "sendingLabel": "Sending…",
+    "errorMessage": "We could not send your request.",
+    "formNote": "Messages are sent securely to {email}.",
     "successTitle": "Your request is on its way",
+    "successIntro": "Thanks for contacting {siteName}.",
     "successMessage": "A support coordinator will review your message and reply by email.",
-    "consentLabel": "I agree that SteadyDesk IT may use these details to respond to my request."
+    "successDelivery": "Your request was delivered to {email}.",
+    "consentLabel": "I agree that {siteName} may use these details to respond to my request."
   },
   "collaboration": {
     "title": "Advertise & Collaborate",
