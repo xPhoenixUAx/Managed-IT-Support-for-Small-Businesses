@@ -21,6 +21,38 @@
     ["SECURITY", "shield-check"],
     ["BACKUP", "database-backup"],
   ]);
+  const processIconNames = new Map([
+    ["Choose the platform", "layout-grid"],
+    ["Configure the domain", "settings"],
+    ["Connect the team", "users"],
+    ["Identify critical data", "folder-search"],
+    ["Protect", "shield-check"],
+    ["Prove recovery", "refresh-cw"],
+    ["Baseline", "search"],
+    ["Prioritize", "list-checks"],
+    ["Strengthen", "lock-keyhole"],
+    ["Inventory", "clipboard-list"],
+    ["Standardize", "sliders-horizontal"],
+    ["Maintain", "wrench"],
+    ["Review", "search"],
+    ["Build", "settings"],
+    ["Move and verify", "check-circle"],
+    ["Discovery", "search"],
+    ["Support plan", "file-text"],
+    ["Operate and review", "rotate-cw"],
+    ["Plan the workspace", "layout-dashboard"],
+    ["Configure and migrate", "cloud-upload"],
+    ["Launch with guidance", "rocket"],
+    ["Assess", "wifi"],
+    ["Improve", "router"],
+    ["Document", "file-check"],
+    ["Tell us what changed", "message-circle"],
+    ["We connect securely", "monitor"],
+    ["Fix, test, explain", "badge-check"],
+    ["Send the request", "send"],
+    ["We review", "search"],
+    ["Take the next step", "arrow-right"],
+  ]);
 
   const createIconPlaceholder = (name, className = "") => {
     const icon = document.createElement("i");
@@ -65,6 +97,11 @@
         ?.querySelector("span:not(.icon-glyph)")?.textContent.trim();
       if (guideCategory && guideIconNames.has(guideCategory)) {
         iconName = guideIconNames.get(guideCategory);
+      }
+      const processTitle = element.closest(".process-card")
+        ?.querySelector("h3")?.textContent.trim();
+      if (processTitle && processIconNames.has(processTitle)) {
+        iconName = processIconNames.get(processTitle);
       }
       if (iconName) replaceWithIcon(element, iconName);
     });
