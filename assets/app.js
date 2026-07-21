@@ -16,6 +16,11 @@
     ["IT Support Plans", "clipboard-check"],
     ["Request Technical Support", "life-buoy"],
   ]);
+  const guideIconNames = new Map([
+    ["EMAIL", "mail-check"],
+    ["SECURITY", "shield-check"],
+    ["BACKUP", "database-backup"],
+  ]);
 
   const createIconPlaceholder = (name, className = "") => {
     const icon = document.createElement("i");
@@ -55,6 +60,11 @@
       );
       if (serviceTitle && serviceIconNames.has(serviceTitle)) {
         iconName = serviceIconNames.get(serviceTitle);
+      }
+      const guideCategory = element.closest(".guide-card")
+        ?.querySelector("span:not(.icon-glyph)")?.textContent.trim();
+      if (guideCategory && guideIconNames.has(guideCategory)) {
+        iconName = guideIconNames.get(guideCategory);
       }
       if (iconName) replaceWithIcon(element, iconName);
     });
