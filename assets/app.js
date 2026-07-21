@@ -577,6 +577,7 @@
     mobileMenu?.setAttribute("aria-hidden", "true");
     servicesButton?.setAttribute("aria-expanded", "false");
     mobileServices?.classList.remove("open");
+    body.classList.remove("menu-open");
     body.classList.remove("menu-lock");
   };
 
@@ -586,6 +587,7 @@
     menuButton.setAttribute("aria-label", opening ? "Close menu" : "Open menu");
     mobileMenu?.classList.toggle("open", opening);
     mobileMenu?.setAttribute("aria-hidden", String(!opening));
+    body.classList.toggle("menu-open", opening);
     body.classList.toggle("menu-lock", opening);
   });
 
